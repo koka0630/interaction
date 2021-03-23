@@ -1,0 +1,124 @@
+#!/bin/sh 
+#$ -S /bin/sh 
+#$ -cwd 
+#$ -V 
+#$ -q all.q 
+#$ -pe OpenMP 40 
+
+hostname 
+
+export g16root=/home/g03 
+source $g16root/g16/bsd/g16.profile 
+
+export GAUSS_SCRDIR=/home/scr/$JOB_ID 
+mkdir /home/scr/$JOB_ID 
+
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-1.5_R3p=0.5_phi1=33.0_phi2=-125.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-1.5_R3p=0.5_phi1=33.0_phi2=-125.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-144.0_phi2=4.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-144.0_phi2=4.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-146.0_phi2=-168.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-146.0_phi2=-168.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-57.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=-57.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=26.0_phi2=-15.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=26.0_phi2=-15.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=26.0_phi2=165.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=26.0_phi2=165.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=33.0_phi2=-125.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-0.5_phi1=33.0_phi2=-125.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-148.0_phi2=1.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-148.0_phi2=1.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-148.0_phi2=176.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-148.0_phi2=176.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-61.0_phi2=13.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=-61.0_phi2=13.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=27.0_phi2=-13.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=27.0_phi2=-13.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=27.0_phi2=169.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=27.0_phi2=169.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=32.0_phi2=-125.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.0_phi1=32.0_phi2=-125.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-148.0_phi2=172.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-148.0_phi2=172.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-151.0_phi2=-9.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-151.0_phi2=-9.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-64.0_phi2=18.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=-64.0_phi2=18.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=27.0_phi2=-11.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=27.0_phi2=-11.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=27.0_phi2=171.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=27.0_phi2=171.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=31.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-1.5_phi1=31.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-148.0_phi2=170.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-148.0_phi2=170.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-151.0_phi2=-16.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-151.0_phi2=-16.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-66.0_phi2=24.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=-66.0_phi2=24.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=26.0_phi2=-9.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=26.0_phi2=-9.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=27.0_phi2=173.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=27.0_phi2=173.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=31.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=-2.0_phi1=31.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-145.0_phi2=-169.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-145.0_phi2=-169.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-145.0_phi2=8.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-145.0_phi2=8.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-55.0_phi2=2.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=-55.0_phi2=2.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=25.0_phi2=-16.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=25.0_phi2=-16.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=25.0_phi2=161.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=25.0_phi2=161.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=33.0_phi2=-125.0.inp > R1=5.0_R2=0.7_theta=58_R3t=-2.0_R3p=0.0_phi1=33.0_phi2=-125.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=-151.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=-151.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=164.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=164.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=28.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=28.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=29.0_phi2=-160.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=29.0_phi2=-160.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=32.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-0.5_phi1=32.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=-150.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=-150.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=163.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=163.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=29.0_phi2=-160.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=29.0_phi2=-160.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=29.0_phi2=6.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=29.0_phi2=6.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=31.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.0_phi1=31.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=-151.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=-151.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=159.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=159.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=28.0_phi2=5.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=28.0_phi2=5.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=29.0_phi2=-159.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=29.0_phi2=-159.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=32.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-1.5_phi1=32.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=-151.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=-151.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=158.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=158.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=25.0_phi2=4.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=25.0_phi2=4.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=28.0_phi2=-164.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=28.0_phi2=-164.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=33.0_phi2=-142.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=-2.0_phi1=33.0_phi2=-142.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=-151.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=-151.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=166.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=166.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=27.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=27.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=29.0_phi2=-159.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=29.0_phi2=-159.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=33.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.0_phi1=33.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=-150.0_phi2=50.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=-150.0_phi2=50.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=163.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=163.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=28.0_phi2=6.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=28.0_phi2=6.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=29.0_phi2=-158.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=29.0_phi2=-158.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=31.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=0.5_phi1=31.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=-150.0_phi2=50.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=-150.0_phi2=50.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=163.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=163.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=29.0_phi2=-157.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=29.0_phi2=-157.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=30.0_phi2=-138.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=30.0_phi2=-138.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=30.0_phi2=6.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.0_phi1=30.0_phi2=6.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=-150.0_phi2=49.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=-150.0_phi2=49.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=172.0_phi2=-128.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=172.0_phi2=-128.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=28.0_phi2=-158.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=28.0_phi2=-158.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=29.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=29.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=30.0_phi2=-138.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=1.5_phi1=30.0_phi2=-138.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=-151.0_phi2=48.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=-151.0_phi2=48.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=177.0_phi2=-129.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=177.0_phi2=-129.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=26.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=26.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=29.0_phi2=-160.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=29.0_phi2=-160.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=33.0_phi2=-138.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.0_R3p=2.0_phi1=33.0_phi2=-138.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=-150.0_phi2=46.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=-150.0_phi2=46.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=161.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=161.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=29.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=29.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=30.0_phi2=-161.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=30.0_phi2=-161.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=31.0_phi2=7.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-0.5_phi1=31.0_phi2=7.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=-150.0_phi2=47.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=-150.0_phi2=47.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=160.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=160.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=29.0_phi2=6.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=29.0_phi2=6.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=30.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=30.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=30.0_phi2=-161.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.0_phi1=30.0_phi2=-161.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=-151.0_phi2=47.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=-151.0_phi2=47.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=157.0_phi2=-126.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=157.0_phi2=-126.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=28.0_phi2=6.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=28.0_phi2=6.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=29.0_phi2=-161.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=29.0_phi2=-161.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=31.0_phi2=-142.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=-1.5_phi1=31.0_phi2=-142.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=-150.0_phi2=46.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=-150.0_phi2=46.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=162.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=162.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=-162.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=-162.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=8.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.0_phi1=30.0_phi2=8.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=-150.0_phi2=47.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=-150.0_phi2=47.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=163.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=163.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=28.0_phi2=8.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=28.0_phi2=8.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=29.0_phi2=-160.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=29.0_phi2=-160.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=32.0_phi2=-141.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=0.5_phi1=32.0_phi2=-141.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=-150.0_phi2=49.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=-150.0_phi2=49.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=164.0_phi2=-127.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=164.0_phi2=-127.0.log 
+g16 < R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=29.0_phi2=-158.0.inp > R1=5.0_R2=0.7_theta=58_R3t=0.5_R3p=1.0_phi1=29.0_phi2=-158.0.log 
+
+rm -rf /home/scr/$JOB_ID 
+
+
+#sleep 500 

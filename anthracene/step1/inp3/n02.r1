@@ -1,0 +1,45 @@
+#!/bin/sh 
+#$ -S /bin/sh 
+#$ -cwd 
+#$ -V 
+#$ -q all.q 
+#$ -pe OpenMP 40 
+
+hostname 
+
+export g16root=/home/g03 
+source $g16root/g16/bsd/g16.profile 
+
+export GAUSS_SCRDIR=/home/scr/$JOB_ID 
+mkdir /home/scr/$JOB_ID 
+
+g16 < R1=4.7_R2=0.8_heri=51.0.inp > R1=4.7_R2=0.8_heri=51.0.log 
+g16 < R1=4.7_R2=0.8_heri=52.0.inp > R1=4.7_R2=0.8_heri=52.0.log 
+g16 < R1=4.7_R2=0.8_heri=53.0.inp > R1=4.7_R2=0.8_heri=53.0.log 
+g16 < R1=4.7_R2=0.8_heri=54.0.inp > R1=4.7_R2=0.8_heri=54.0.log 
+g16 < R1=4.7_R2=0.8_heri=55.0.inp > R1=4.7_R2=0.8_heri=55.0.log 
+g16 < R1=4.7_R2=0.9_heri=51.0.inp > R1=4.7_R2=0.9_heri=51.0.log 
+g16 < R1=4.7_R2=0.9_heri=52.0.inp > R1=4.7_R2=0.9_heri=52.0.log 
+g16 < R1=4.7_R2=0.9_heri=53.0.inp > R1=4.7_R2=0.9_heri=53.0.log 
+g16 < R1=4.7_R2=0.9_heri=54.0.inp > R1=4.7_R2=0.9_heri=54.0.log 
+g16 < R1=4.7_R2=0.9_heri=55.0.inp > R1=4.7_R2=0.9_heri=55.0.log 
+g16 < R1=4.8_R2=0.7_heri=51.0.inp > R1=4.8_R2=0.7_heri=51.0.log 
+g16 < R1=4.8_R2=0.7_heri=52.0.inp > R1=4.8_R2=0.7_heri=52.0.log 
+g16 < R1=4.8_R2=0.7_heri=53.0.inp > R1=4.8_R2=0.7_heri=53.0.log 
+g16 < R1=4.8_R2=0.7_heri=54.0.inp > R1=4.8_R2=0.7_heri=54.0.log 
+g16 < R1=4.8_R2=0.7_heri=55.0.inp > R1=4.8_R2=0.7_heri=55.0.log 
+g16 < R1=4.8_R2=0.8_heri=51.0.inp > R1=4.8_R2=0.8_heri=51.0.log 
+g16 < R1=4.8_R2=0.8_heri=52.0.inp > R1=4.8_R2=0.8_heri=52.0.log 
+g16 < R1=4.8_R2=0.8_heri=53.0.inp > R1=4.8_R2=0.8_heri=53.0.log 
+g16 < R1=4.8_R2=0.8_heri=54.0.inp > R1=4.8_R2=0.8_heri=54.0.log 
+g16 < R1=4.8_R2=0.8_heri=55.0.inp > R1=4.8_R2=0.8_heri=55.0.log 
+g16 < R1=4.8_R2=0.9_heri=51.0.inp > R1=4.8_R2=0.9_heri=51.0.log 
+g16 < R1=4.8_R2=0.9_heri=52.0.inp > R1=4.8_R2=0.9_heri=52.0.log 
+g16 < R1=4.8_R2=0.9_heri=53.0.inp > R1=4.8_R2=0.9_heri=53.0.log 
+g16 < R1=4.8_R2=0.9_heri=54.0.inp > R1=4.8_R2=0.9_heri=54.0.log 
+g16 < R1=4.8_R2=0.9_heri=55.0.inp > R1=4.8_R2=0.9_heri=55.0.log 
+
+rm -rf /home/scr/$JOB_ID 
+
+
+#sleep 500 

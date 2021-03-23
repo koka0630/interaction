@@ -1,0 +1,42 @@
+#!/bin/sh 
+#$ -S /bin/sh 
+#$ -cwd 
+#$ -V 
+#$ -q all.q 
+#$ -pe OpenMP 40 
+
+hostname 
+
+export g16root=/home/g03 
+source $g16root/g16/bsd/g16.profile 
+
+export GAUSS_SCRDIR=/home/scr/$JOB_ID 
+mkdir /home/scr/$JOB_ID 
+
+g16 < A2=15_a=8.2_b=6.2.inp > A2=15_a=8.2_b=6.2.log 
+g16 < A2=15_a=8.2_b=6.4.inp > A2=15_a=8.2_b=6.4.log 
+g16 < A2=15_a=8.4_b=5.8.inp > A2=15_a=8.4_b=5.8.log 
+g16 < A2=15_a=8.4_b=6.0.inp > A2=15_a=8.4_b=6.0.log 
+g16 < A2=15_a=8.4_b=6.2.inp > A2=15_a=8.4_b=6.2.log 
+g16 < A2=15_a=8.4_b=6.4.inp > A2=15_a=8.4_b=6.4.log 
+g16 < A2=15_a=8.6_b=6.2.inp > A2=15_a=8.6_b=6.2.log 
+g16 < A2=15_a=8.6_b=6.4.inp > A2=15_a=8.6_b=6.4.log 
+g16 < A2=15_a=8.8_b=6.2.inp > A2=15_a=8.8_b=6.2.log 
+g16 < A2=15_a=8.8_b=6.4.inp > A2=15_a=8.8_b=6.4.log 
+g16 < A2=16_a=8.2_b=5.8.inp > A2=16_a=8.2_b=5.8.log 
+g16 < A2=16_a=8.2_b=6.0.inp > A2=16_a=8.2_b=6.0.log 
+g16 < A2=16_a=8.2_b=6.2.inp > A2=16_a=8.2_b=6.2.log 
+g16 < A2=16_a=8.2_b=6.4.inp > A2=16_a=8.2_b=6.4.log 
+g16 < A2=16_a=8.4_b=5.8.inp > A2=16_a=8.4_b=5.8.log 
+g16 < A2=16_a=8.4_b=6.0.inp > A2=16_a=8.4_b=6.0.log 
+g16 < A2=16_a=8.4_b=6.2.inp > A2=16_a=8.4_b=6.2.log 
+g16 < A2=16_a=8.4_b=6.4.inp > A2=16_a=8.4_b=6.4.log 
+g16 < A2=16_a=8.6_b=6.2.inp > A2=16_a=8.6_b=6.2.log 
+g16 < A2=16_a=8.6_b=6.4.inp > A2=16_a=8.6_b=6.4.log 
+g16 < A2=16_a=8.8_b=6.2.inp > A2=16_a=8.8_b=6.2.log 
+g16 < A2=16_a=8.8_b=6.4.inp > A2=16_a=8.8_b=6.4.log 
+
+rm -rf /home/scr/$JOB_ID 
+
+
+#sleep 500 

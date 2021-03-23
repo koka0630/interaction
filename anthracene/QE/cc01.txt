@@ -1,0 +1,2 @@
+mpirun -np 36 pw.x < anth_QE_para.inp.inp > anth_QE_para.inp.out 
+mpirun -np 36 pw.x < anth_QE_twist.inp.inp > anth_QE_twist.inp.out 

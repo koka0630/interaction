@@ -1,0 +1,55 @@
+&control
+  prefix        = 'wm',
+  outdir        = 'opt01_qe_data',
+  verbosity     = 'high',
+  calculation   = 'vc-relax',
+  restart_mode  = 'from_scratch',
+  wf_collect    = .True.,
+  etot_conv_thr = 1d-4,
+  forc_conv_thr = 1d-3,
+  nstep         = 50,
+  tprnfor       = .True.,
+  pseudo_dir = '/home/ck834/qe/pseudo',
+  outdir='./work/'
+/
+&system
+  ibrav         = 0,
+  nat           = 48,
+  nspin         = 1,
+  ntyp          = 2,
+  ecutwfc       = 64.,
+  ecutrho       = 576.,
+  nosym         = .False.,
+  noinv         = .False.,
+  tot_charge    = 0.,
+  input_dft='PBE',
+  vdw_corr='Grimme-D3',
+/
+
+&electrons
+  conv_thr            = 1d-8,
+  mixing_beta         = 0.7,
+  mixing_mode         = 'plain',
+  electron_maxstep    = 100,
+  diagonalization     = 'david',
+/
+&ions
+  ion_dynamics      = 'bfgs',
+/
+&cell
+  cell_dofree   = 'all',
+  cell_dynamics = 'bfgs',
+  press         = 0.001,
+  cell_factor   = 3.0,
+/
+
+ATOMIC_SPECIES
+C 12.011 C.pbe-n-rrkjus_psl.1.0.0.UPF
+H 1.00794 H.pbe-rrkjus_psl.1.0.0.UPF
+ 
+ATOMIC_POSITIONS angstrom
+ 
+K_POINTS {automatic}
+3 3 2 1 1 1
+
+CELL_PARAMETERS angstrom
