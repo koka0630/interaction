@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.decomposition import PCA
 
 #Ra,Rb,heri/2 --> R1,R2
 def convertor_R(Ra,Rb,theta_):
@@ -15,3 +16,9 @@ def Rod(n,theta_in):
                 [nx*nz*(1-np.cos(theta_t))-ny*np.sin(theta_t),ny*nz*(1-np.cos(theta_t))+nx*np.sin(theta_t),np.cos(theta_t)+(nz**2)*(1-np.cos(theta_t))]])
     return Rod
 
+def extract_axis(xyz_array):#shape=[n,3]
+    pca = PCA()
+    pca.fit(xyz_array)
+    long_axis = pca.components_[0]
+    short_axis = pca.components_[1]
+    return long_axis, short_axis
