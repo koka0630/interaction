@@ -114,4 +114,17 @@ def invert_A(A1,A2):
         A2_old = 90 if A2>0 else -90
     else:
         A2_old = np.degrees(np.arctan(np.sin(np.radians(A2))/np.tan(np.radians(A1))))
+    
+    def translator_A(_A1_new, _A2_new, _A1_old, _A2_old):
+        if _A1_new>=0:
+            return _A1_old, _A2_old
+        elif _A2_new>0:
+            return _A1_old, _A2_old+180.0
+        elif _A2_new==0:
+            return _A1_old, _A2_old
+        elif _A2_new<0:
+            return _A1_old, _A2_old-180.0
+    
+    A1_old, A2_old = translator_A(A1,A2,A1_old, A2_old)
+    
     return A1_old, A2_old
