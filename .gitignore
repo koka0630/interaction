@@ -3,7 +3,9 @@
 *.gjf
 *.csv
 *.png
+*.xyz
 *.zip
+*.gif
 *.r1
 *.ipynb
 *.DS_Store
