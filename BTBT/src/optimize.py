@@ -23,8 +23,8 @@ def get_init_para_csv(auto_dir,R1,R2,heri,glide):
     a, b = get_ab_from_params(R1,R2,heri)
     a = round(a,1); b = round(b,1)
     
-    A1_list = [0,5,10,15,20,25,30,35,40]
-    A2_list = [-15,-10,-5,0,5]#[-15,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,5]
+    A1_list = [-5,0,5,10,-10]
+    A2_list = [-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30]#[-15,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,5]
     for A1 in A1_list:
         for A2 in A2_list:
             A3 = heri_to_A3(A1,A2,heri)

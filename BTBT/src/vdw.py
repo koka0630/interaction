@@ -27,7 +27,7 @@ def convertor(atom_list,A1,A2,A3):
 
 def get_c_vec_vdw(A1,A2,A3,a_,b_):#,name_csv
     a=np.array([a_,0,0]);b=np.array([0,b_,0]);t1=(a+b)/2;t2=(a-b)/2
-    df_anth=pd.read_csv('./monomer.csv')###x,y,z,rad
+    df_anth=pd.read_csv('/Users/jigenji/Working/interaction/BTBT/assets/monomer.csv')###x,y,z,rad
     anth=df_anth[['X','Y','Z','R']].values
     anth_i0=convertor(anth,A1,A2,A3)#層間
     anth_p=convertor(anth,A1,A2,A3)#層内
