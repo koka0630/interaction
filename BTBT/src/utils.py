@@ -5,6 +5,11 @@ import math
 import pandas as pd
 from sklearn.decomposition import PCA
 
+def squeeze_min_df_E(df_E,columns=['A1','A2']):
+    ddf = df_E.groupby(columns)
+    df_Emin = df_E.loc[ddf['E'].idxmin(),:]
+    return df_Emin
+
 def get_rot_axis_from_A2(A2,glide_mode):
     A2 = np.radians(A2)
     if glide_mode=='a':
