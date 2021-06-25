@@ -32,7 +32,7 @@ def get_gjf_xyz(a_,b_,A1,A2,A3,glide):
     return gij_xyz_lines
 
 def get_monomer_xyzR(Ta,Tb,Tc,A1,A2,A3):
-    R_vec = np.array([Ta,Tb,Tc])
+    T_vec = np.array([Ta,Tb,Tc])
     df_mono=pd.read_csv('/home/koyama/Working/interaction/BTBT/BTBT.csv')
     atoms_array_xyzR=df_mono[['X','Y','Z','R']].values
     
@@ -42,7 +42,7 @@ def get_monomer_xyzR(Ta,Tb,Tc,A1,A2,A3):
     xyz_array = atoms_array_xyzR[:,:3]
     xyz_array = np.matmul(xyz_array,Rod(ez,A3 + A2).T)
     xyz_array = np.matmul(xyz_array,Rod(rot_axis,A1).T)
-    xyz_array = xyz_array + R_vec
+    xyz_array = xyz_array + T_vec
     R_array = atoms_array_xyzR[:,3].reshape((-1,1))
     return np.concatenate([xyz_array,R_array],axis=1)
 
@@ -131,7 +131,7 @@ def arrangeITP(atom_list,a_,b_,A1,A2,A3,glide):
     glide=180.0 if glide=='a' else 0.0
 
     #回転軸
-    rot_axis1, rot_axis2 = get_rot_axis_from_A2()
+    rot_axis1, rot_axis2 = get_rot_axis_from_A2(A2,glide)
 
     #alkyl回転・分子1作成
     for ind,(x,y,z,R) in enumerate(atom_list):
@@ -212,6 +212,37 @@ def make_gaussview_xyz(auto_dir, a_,b_,A1,A2,A3,glide):
     
     with open(output_path,'w') as f:
         f.writelines(lines)
+        
+def get_monomers_xyzR(atom_list,a,b,c,A1,A2,A3,glide_mode):
+    assert glide_mode=='a' or glide_mode=='b'
+    monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
+    if glide_mode=='a':
+        monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2,A3)
+    else:
+        monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,A2,A3)
+    monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
+    monomers_array = np.concatenate([monomer_array_i,monomer_array_t,monomer_array_p],axis=0)
+    return monomers_array
+
+def new_make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide):
+    df_mono=pd.read_csv('/home/koyama/Working/interaction/BTBT/assets/monomer.csv')
+    monomer=df_mono[['X','Y','Z','R']].values
+    a =np.array([a_,0,0])
+    b =np.array([0,b_,0])
+    
+    monomers_array=get_monomers_xyzR(monomer,a,b,c,A1,A2,A3,glide)
+    file_description = 'A1={}_A2={}_A3={}'.format(round(A1),round(A2),round(A3))
+    lines = make_arr_xyz(monomers_array,a,b,file_description)
+    
+    os.makedirs(os.path.join(auto_dir,'gaussview'),exist_ok=True)
+    output_path = os.path.join(
+        auto_dir,
+        'gaussview/BTBT_A1={}_A2={}_A3={}_a={}_b={}.gjf'.format(round(A1),round(A2),round(A3),np.round(a_,2),np.round(b_,2))
+    )
+    
+    with open(output_path,'w') as f:
+        f.writelines(lines)
+
 ##############################
 
 # job実行
