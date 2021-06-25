@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jigenji/opt/anaconda3/lib/python3.8/site-packages')
-sys.path.append('/Users/jigenji/Working/interaction/BTBT/')
 import os
 import numpy as np
 import pandas as pd
