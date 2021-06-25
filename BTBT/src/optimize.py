@@ -1,18 +1,7 @@
 import os
-import sys
 import numpy as np
-import math
 import pandas as pd
-import re
-import shutil
-import itertools
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import time
-import copy
-import matplotlib.animation as animation
-import subprocess
-from src.utils import Rod, heri_to_A3, get_ab_from_params
+from src.utils import heri_to_A3, get_ab_from_params
 import scipy.spatial.distance as distance
 import random
 

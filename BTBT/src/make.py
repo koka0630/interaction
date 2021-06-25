@@ -80,12 +80,12 @@ def get_one_exe(file_name,machine_type=2):
 ######################################## 特化関数 ########################################
 
 ##################gaussview##################
-def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=True):
+def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=False,isInterlayer=False):
     a =np.array([a_,0,0])
     b =np.array([0,b_,0])
     
     assert glide_mode=='a' or glide_mode=='b'
-    
+
     monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
     monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
     monomer_array_i0 = get_monomer_xyzR(c[0],c[1],c[2],A1,A2,A3)
@@ -97,12 +97,16 @@ def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=True):
         monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2+180.0,-A3+180.0)
         monomer_array_it1 = get_monomer_xyzR(c[0]+a_/2,c[1]+b_/2,c[2],A1,-A2+180.0,-A3+180.0)
 
-    monomers_array = np.concatenate([monomer_array_i,monomer_array_t,monomer_array_p,monomer_array_i0,monomer_array_ip1,monomer_array_it1],axis=0)
+    if isInterlayer:
+        monomers_array = np.concatenate([monomer_array_i,monomer_array_t,monomer_array_p,monomer_array_i0,monomer_array_ip1,monomer_array_it1],axis=0)
+    else:
+        monomers_array = np.concatenate([monomer_array_i,monomer_array_t,monomer_array_p],axis=0)
     
     file_description = 'A1={}_A2={}_A3={}'.format(round(A1),round(A2),round(A3))
     lines = get_xyzR_lines(monomers_array,a,b,file_description)
     lines.append('Tv {} {} {}\n'.format(a[0],a[1],a[2]))
-    lines.append('Tv {} {} {}\n\n\n'.format(b[0],b[1],b[2]))
+    lines.append('Tv {} {} {}\n'.format(b[0],b[1],b[2]))
+    lines.append('Tv {} {} {}\n\n\n'.format(c[0],c[1],c[2]))
     
     os.makedirs(os.path.join(auto_dir,'gaussview'),exist_ok=True)
     output_path = os.path.join(
@@ -115,9 +119,8 @@ def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=True):
     if isTest:
         subprocess.run(['open',output_path])
 
-def get_gjf_xyz(a_,b_,A1,A2,A3,glide_mode,isInterlayer=False):
+def get_gjf_xyz(a_,b_,c,A1,A2,A3,glide_mode,isInterlayer=False):
     
-    c = get_c_vec_vdw(A1,A2,A3,a_,b_,glide_mode)
     monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
     monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
     monomer_array_i0 = get_monomer_xyzR(c[0],c[1],c[2],A1,A2,A3)
@@ -153,9 +156,9 @@ def get_gjf_xyz(a_,b_,A1,A2,A3,glide_mode,isInterlayer=False):
 def exec_gjf(auto_dir, params, machine_type):
     inp_dir = os.path.join(auto_dir,'gaussian')
     print(params)
-    A1,A2,A3,a_,b_ = params
+    A1,A2,A3,a_,b_,c,glide,isInterlayer = params
     file_name = 'BTBT_A1={}_A2={}_A3={}_a={}_b={}.inp'.format(round(A1),round(A2),round(A3),np.round(a_,2),np.round(b_,2))
-    gij_xyz_lines = get_gjf_xyz(a_,b_,A1,A2,A3,glide='a')
+    gij_xyz_lines = get_gjf_xyz(a_,b_,c,A1,A2,A3,glide,isInterlayer)
     gij_xyz_path = os.path.join(inp_dir,file_name)
     with open(gij_xyz_path,'w') as f:
         f.writelines(gij_xyz_lines)

@@ -23,39 +23,6 @@ def convertor(atom_list,A1,A2,A3):
     return np.array(atom_list_rt)
 
 def get_c_vec_vdw(A1,A2,A3,a_,b_,glide_mode='a'):#,name_csv
-    a=np.array([a_,0,0]);b=np.array([0,b_,0]);t1=(a+b)/2;t2=(a-b)/2;glide = 180.0 if glide_mode=='a' else 0.0
-    df_anth=pd.read_csv('assets/monomer.csv')###x,y,z,rad
-    anth=df_anth[['X','Y','Z','R']].values
-    anth_i0=convertor(anth,A1,A2,A3)#層間
-    anth_p=convertor(anth,A1,A2,A3)#層内
-    anth_t=convertor(anth,A1,-A2,-A3+glide)#層内
-    arr_list=[[np.zeros(3),'p'],[b,'p'],[-b,'p'],[a,'p'],[-a,'p'],[t1,'t'],[-t1,'t'],[t2,'t'],[-t2,'t']]
-    Ra_list=[np.round(Ra,1) for Ra in np.linspace(-np.round(a_/2,1),np.round(a_/2,1),int(np.round(2*np.round(a_/2,1)/0.1))+1)]
-    z_list=[];V_list=[]
-    df_vdw=pd.DataFrame(columns=['Ra','R3','V'])
-    for Ra in Ra_list:
-        z_max=0
-        for R,arr in arr_list:
-            if arr=='t':
-                anth=anth_t
-            elif arr=='p':
-                anth=anth_p
-            for x1,y1,z1,R1 in anth:#層内
-                x1,y1,z1=np.array([x1,y1,z1])+R
-                for x2,y2,z2,R2 in anth_i0:#i0
-                    x2+=Ra
-                    z_sq=(R1+R2)**2-(x1-x2)**2-(y1-y2)**2
-                    if z_sq<0:
-                        z_clps=0.0
-                    else:
-                        z_clps=np.sqrt(z_sq)+z1-z2
-                    z_max=max(z_max,z_clps)
-        z_list.append(z_max)
-        V_list.append(a_*b_*z_max)
-    df_vdw['Ra']=Ra_list;df_vdw['R3']=z_list;df_vdw['V']=V_list
-    return np.array([Ra_list[np.argmin(V_list)],0,z_list[np.argmin(V_list)]])
-
-def new_get_c_vec_vdw(A1,A2,A3,a_,b_,glide_mode='a'):#,name_csv
     
     assert glide_mode=='a' or glide_mode=='b'
     
