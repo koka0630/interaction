@@ -20,7 +20,7 @@ import random
 def get_gjf_xyz(a_,b_,A1,A2,A3,glide):
     
     a = np.array([a_,0,0]); b = np.array([0,b_,0]); c = np.array([0,0,0])#get_c_vec_vdw(A1,A2,A3,a_,b_)　TODO
-    monomer_array_i = get_monomer_xyzR(0,0,A1,A2,A3)
+    monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
     dimer_array_it = get_dimer_xyzR_from_monomer_xyzR(monomer_array_i, a, b, c, dimer_type='t', glide='a')
     dimer_array_ip = get_dimer_xyzR_from_monomer_xyzR(monomer_array_i, a, b, c, dimer_type='p', glide='a')
     
@@ -31,8 +31,8 @@ def get_gjf_xyz(a_,b_,A1,A2,A3,glide):
     
     return gij_xyz_lines
 
-def get_monomer_xyzR(Ra,Rb,A1,A2,A3):
-    
+def get_monomer_xyzR(Ta,Tb,Tc,A1,A2,A3):
+    R_vec = np.array([Ta,Tb,Tc])
     df_mono=pd.read_csv('/home/koyama/Working/interaction/BTBT/BTBT.csv')
     atoms_array_xyzR=df_mono[['X','Y','Z','R']].values
     
@@ -42,6 +42,7 @@ def get_monomer_xyzR(Ra,Rb,A1,A2,A3):
     xyz_array = atoms_array_xyzR[:,:3]
     xyz_array = np.matmul(xyz_array,Rod(ez,A3 + A2).T)
     xyz_array = np.matmul(xyz_array,Rod(rot_axis,A1).T)
+    xyz_array = xyz_array + R_vec
     R_array = atoms_array_xyzR[:,3].reshape((-1,1))
     return np.concatenate([xyz_array,R_array],axis=1)
 
