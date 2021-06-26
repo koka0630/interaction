@@ -103,7 +103,7 @@ def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=False,isInte
         monomers_array = np.concatenate([monomer_array_i,monomer_array_t,monomer_array_p],axis=0)
     
     file_description = 'A1={}_A2={}_A3={}'.format(round(A1),round(A2),round(A3))
-    lines = get_xyzR_lines(monomers_array,a,b,file_description)
+    lines = get_xyzR_lines(monomers_array,file_description)
     lines.append('Tv {} {} {}\n'.format(a[0],a[1],a[2]))
     lines.append('Tv {} {} {}\n'.format(b[0],b[1],b[2]))
     lines.append('Tv {} {} {}\n\n\n'.format(c[0],c[1],c[2]))
