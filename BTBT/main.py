@@ -36,7 +36,7 @@ def main_process(args):
     auto_dir = args.auto_dir
     glide = args.glide
     heri = args.heri
-    isInterlayer = args.isInterlayer
+    isInterlayer = False
     
     os.chdir(os.path.join(auto_dir,'gaussian'))
     
@@ -87,7 +87,6 @@ if __name__ == '__main__':
     parser.add_argument('--R2', type=float, default=0.7)
     parser.add_argument('--heri', type=int, default=60)
     parser.add_argument('--glide', type=str, default='a')
-    parser.add_argument('--isInterlayer', typs=bool, default=False)
     
     args = parser.parse_args()
 
