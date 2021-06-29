@@ -3,7 +3,7 @@ import pandas as pd
 import time
 import sys
 from tqdm import tqdm
-sys.path.append('/Users/jigenji/Working/interaction/BTBT/')
+sys.path.append(os.path.join(os.environ['HOME'],'Working/interaction/BTBT/'))
 from src.make import exec_gjf
 from src.vdw import vdw_R
 from src.listen import get_E
@@ -40,7 +40,6 @@ def init_process(args):
                     a = np.round(a,1);b = np.round(b,1)
                     a_list.append(a);b_list.append(b);S_list.append(a*b)
             local_minidx_list = signal.argrelmin(np.array(S_list), order=order)
-            print(local_minidx_list) # --> (array([15]),)
             if len(local_minidx_list[0])>0:
                 for local_minidx in local_minidx_list[0]:
                     init_para_list.append([a_list[local_minidx],b_list[local_minidx],theta,'NotYet'])
@@ -124,7 +123,6 @@ def get_params_dict(auto_dir):
     opt_param_keys = ['a','b']
 
     #最初の立ち上がり時
-    print(df_init_params_inprogress)
     if len(df_init_params_inprogress) < 6:
         df_init_params_notyet = df_init_params[df_init_params['status']=='NotYet']
         for index in df_init_params_notyet.index:
