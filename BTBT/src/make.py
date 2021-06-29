@@ -121,18 +121,21 @@ def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=False,isInte
 
 def make_gjf_xyz(auto_dir,params_dict,isInterlayer):
     a_ = params_dict['a']; b_ = params_dict['b']; c = np.array([params_dict['cx'],params_dict['cy'],params_dict['cz']])
-    A1 = params_dict['A1']; A2 = params_dict['A2']; A3 = params_dict['theta']; glide_mode = params_dict['glide_mode'],
+    A1 = params_dict['A1']; A2 = params_dict['A2']; A3 = params_dict['theta']
     
     monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
-    monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
+    if a_>b_:
+        monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
+    else:
+        monomer_array_p = get_monomer_xyzR(a_,0,0,A1,A2,A3)
     monomer_array_i0 = get_monomer_xyzR(c[0],c[1],c[2],A1,A2,A3)
     monomer_array_ip1 = get_monomer_xyzR(c[0],c[1]+b_,c[2],A1,A2,A3)
-    if glide_mode=='a':
-        monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2,-A3+180.0)
-        monomer_array_it1 = get_monomer_xyzR(c[0]+a_/2,c[1]+b_/2,c[2],A1,-A2,-A3+180.0)
-    else:
-        monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2+180.0,-A3+180.0)
-        monomer_array_it1 = get_monomer_xyzR(c[0]+a_/2,c[1]+b_/2,c[2],A1,-A2+180.0,-A3+180.0)
+    # if glide_mode=='a':
+    #     monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2,-A3+180.0)
+    #     monomer_array_it1 = get_monomer_xyzR(c[0]+a_/2,c[1]+b_/2,c[2],A1,-A2,-A3+180.0)
+    # else:
+    monomer_array_t = get_monomer_xyzR(a_/2,b_/2,0,A1,-A2+180.0,-A3+180.0)
+    monomer_array_it1 = get_monomer_xyzR(c[0]+a_/2,c[1]+b_/2,c[2],A1,-A2+180.0,-A3+180.0)
 
     dimer_array_t = np.concatenate([monomer_array_i,monomer_array_t])
     dimer_array_p = np.concatenate([monomer_array_i,monomer_array_p])
@@ -140,7 +143,7 @@ def make_gjf_xyz(auto_dir,params_dict,isInterlayer):
     dimer_array_it1 = np.concatenate([monomer_array_i,monomer_array_it1])
     dimer_array_ip1 = np.concatenate([monomer_array_i,monomer_array_ip1])
     
-    file_description = 'A1={}_A2={}_A3={}_glide={}'.format(int(A1),int(A2),int(A3),glide_mode)
+    file_description = 'A1={}_A2={}_A3={}'.format(int(A1),int(A2),int(A3))
     line_list_dimer_t = get_xyzR_lines(dimer_array_t,file_description+'_t')
     line_list_dimer_p = get_xyzR_lines(dimer_array_p,file_description+'_p')
     line_list_dimer_i0 = get_xyzR_lines(dimer_array_i0,file_description+'_i0')
@@ -171,7 +174,7 @@ def get_file_name_from_dict(paras_dict):
         file_name += '_{}={}'.format(key,val)
     return file_name + '.inp'
     
-def exec_gjf(auto_dir, params_dict, machine_type,isInterlayer):
+def exec_gjf(auto_dir, params_dict, machine_type,isInterlayer,isTest=True):
     inp_dir = os.path.join(auto_dir,'gaussian')
     print(params_dict)
     
@@ -181,7 +184,8 @@ def exec_gjf(auto_dir, params_dict, machine_type,isInterlayer):
     sh_path = os.path.join(inp_dir,sh_filename)
     with open(sh_path,'w') as f:
         f.writelines(cc_list)
-    subprocess.run(['qsub',sh_path])
+    if not(isTest):
+        subprocess.run(['qsub',sh_path])
     log_file_name = os.path.splitext(file_name)[0]+'.log'
     return log_file_name
     
