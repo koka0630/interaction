@@ -62,7 +62,8 @@ def init_process(args):
     df_init=pd.read_csv(os.path.join(auto_dir,'step1_init_params.csv'))
     df_init['status']='NotYet'
     df_init.to_csv(os.path.join(auto_dir,'step1_init_params.csv'),index=False)
-    return 
+    
+    os.chdir(os.path.join(args.auto_dir,'gaussian'))
 
 def main_process(args):
     isOver = False
