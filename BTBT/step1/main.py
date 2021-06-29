@@ -12,9 +12,6 @@ import numpy as np
 from scipy import signal
 import scipy.spatial.distance as distance
 import random
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
 def init_process(args):
     # 数理モデル的に自然な定義の元のparams initリスト: not yet
@@ -42,20 +39,13 @@ def init_process(args):
                 else:
                     a = np.round(a,1);b = np.round(b,1)
                     a_list.append(a);b_list.append(b);S_list.append(a*b)
-            fig = plt.figure()
-            ax = fig.add_subplot(1,1,1)
-            ax.scatter(a_list,b_list,c=S_list)
             local_minidx_list = signal.argrelmin(np.array(S_list), order=order)
             print(local_minidx_list) # --> (array([15]),)
             if len(local_minidx_list[0])>0:
                 for local_minidx in local_minidx_list[0]:
                     init_para_list.append([a_list[local_minidx],b_list[local_minidx],theta,'NotYet'])
-                    ax.scatter(a_list[local_minidx],b_list[local_minidx],marker='D')
             init_para_list.append([a_list[0],b_list[0],theta,'NotYet'])
             init_para_list.append([a_list[-1],b_list[-1],theta,'NotYet'])
-            ax.scatter(a_list[0],b_list[0],marker='D')
-            ax.scatter(a_list[-1],b_list[-1],marker='D')
-            plt.savefig('order={}_theta={}.png'.format(order,theta))
             
         df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['a','b','theta','status'])
         df_init_params.to_csv(init_params_csv,index=False)
