@@ -56,6 +56,7 @@ def init_process(args):
     if not os.path.exists(auto_csv_path):        
         df_E_init = pd.DataFrame(columns = ['a','b','theta','E','E_p','E_t','machine_type','status','file_name'])
     else:
+        df_E_init = pd.read_csv(auto_csv_path)
         df_E_init = df_E_init[df_E_init['status']!='InProgress']
     df_E_init.to_csv(auto_csv_path,index=False)
 
