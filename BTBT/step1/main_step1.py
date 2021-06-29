@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from src.make import exec_gjf
 from src.utils import check_calc_status, get_ab_from_params, heri_to_A3
-from src.optimize import get_params, get_init_para_csv
+from src.vdw import vdw_R
 from src.listen import get_E
 import argparse
 import numpy as np
@@ -26,15 +26,30 @@ def init_process(args):
         init_params_csv = os.path.join(auto_dir, 'step1_init_params.csv')
         
         init_para_list = []
-        init_para_list.append([0,0,theta,a,b,glide,'NotYet'])
-        df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['A1','A2','A3','a','b','glide','status'])
+        A1 = 0; A2 = 0
+        for theta in range(0,90,5):
+            a_list = []; b_list = []; S_list = []
+            a_clps=vdw_R(A1,A2,theta,0.0,'a','b')
+            b_clps=vdw_R(A1,A2,theta,90.0,'b','b')
+            for theta_ab in theta_ab_list:
+                R_clps=vdw_R(A1,A2,theta,theta_ab,'t',glide_mode)
+                a=2*R_clps*np.cos(np.radians(theta_ab))
+                b=2*R_clps*np.sin(np.radians(theta_ab))
+                if (a_clps > a) or (b_clps > b):
+                    continue
+                else:
+                    S=a*b
+                a_list.append(a);b_list.append(b);S_list.append(S)
+            idx_Smin = np.argmin(S_list)
+            init_para_list.append([a_list[idx_Smin],b_list[idx_Smin],theta,glide,'NotYet'])
+        df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['a','b','theta','glide_mode','status'])
         df_init_params.to_csv(init_params_csv,index=False)
     
     get_init_para_csv(auto_dir, glide)
     
     auto_csv_path = os.path.join(auto_dir,'step1_auto.csv')
     if not os.path.exists(auto_csv_path):        
-        df_E_init = pd.DataFrame(columns = ['A1','A2','A3','E','E_p','E_t','a','b','cx','cy','cz','glide','machine_type','status'])
+        df_E_init = pd.DataFrame(columns = ['a','b','theta','glide_mode','E','E_p','E_t','machine_type','status','file_name'])
         df_E_init.to_csv(auto_csv_path,index=False)
 
     df_init=pd.read_csv(os.path.join(auto_dir,'step1_init_params.csv'))
