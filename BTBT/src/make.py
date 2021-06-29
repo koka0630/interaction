@@ -119,7 +119,9 @@ def make_gaussview_xyz(auto_dir, a_,b_,c,A1,A2,A3,glide_mode,isTest=False,isInte
     if isTest:
         subprocess.run(['open',output_path])
 
-def get_gjf_xyz(a_,b_,c,A1,A2,A3,glide_mode,isInterlayer=False):
+def make_gjf_xyz(auto_dir,params_dict,isInterlayer):
+    a_ = params_dict['a']; b_ = params_dict['b']; c = np.array([params_dict['cx'],params_dict['cy'],params_dict['cz']])
+    A1 = params_dict['A1']; A2 = params_dict['A2']; A3 = params_dict['theta']; glide_mode = params_dict['glide_mode'],
     
     monomer_array_i = get_monomer_xyzR(0,0,0,A1,A2,A3)
     monomer_array_p = get_monomer_xyzR(0,b_,0,A1,A2,A3)
@@ -151,22 +153,36 @@ def get_gjf_xyz(a_,b_,c,A1,A2,A3,glide_mode,isInterlayer=False):
         gij_xyz_lines = ['$ RunGauss\n'] + line_list_dimer_t + ['\n\n--Link1--\n'] + line_list_dimer_p \
             + ['\n\n--Link1--\n'] + line_list_dimer_i0 + ['\n\n--Link1--\n'] + line_list_dimer_ip1+ ['\n\n--Link1--\n'] + line_list_dimer_it1
     
-    return gij_xyz_lines
-
-def exec_gjf(auto_dir, params, machine_type):
+    file_name = get_file_name_from_dict(params_dict)
     inp_dir = os.path.join(auto_dir,'gaussian')
-    print(params)
-    A1,A2,A3,a_,b_,c,glide,isInterlayer = params
-    file_name = 'BTBT_A1={}_A2={}_A3={}_a={}_b={}.inp'.format(round(A1),round(A2),round(A3),np.round(a_,2),np.round(b_,2))
-    gij_xyz_lines = get_gjf_xyz(a_,b_,c,A1,A2,A3,glide,isInterlayer)
     gij_xyz_path = os.path.join(inp_dir,file_name)
     with open(gij_xyz_path,'w') as f:
         f.writelines(gij_xyz_lines)
+    
+    return file_name
+
+def get_file_name_from_dict(paras_dict):
+    file_name = 'BTBT'
+    for key,val in paras_dict.items():
+        if key == 'a' or key == 'b':
+            val = np.round(val,2)
+        elif key == 'theta':
+            val = np.round(val)
+        file_name += '_{}={}'.format(key,val)
+    return file_name + '.inp'
+    
+def exec_gjf(auto_dir, params_dict, machine_type,isInterlayer):
+    inp_dir = os.path.join(auto_dir,'gaussian')
+    print(params_dict)
+    
+    file_name = make_gjf_xyz(auto_dir, params_dict, isInterlayer)
     cc_list = get_one_exe(file_name,machine_type)
     sh_filename = os.path.splitext(file_name)[0]+'.r1'
     sh_path = os.path.join(inp_dir,sh_filename)
     with open(sh_path,'w') as f:
         f.writelines(cc_list)
     subprocess.run(['qsub',sh_path])
+    log_file_name = os.path.splitext(file_name)[0]+'.log'
+    return log_file_name
     
 ############################################################################################
