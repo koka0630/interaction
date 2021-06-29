@@ -1,55 +1,70 @@
 import os
 import pandas as pd
 import time
+import sys
+from tqdm import tqdm
+sys.path.append('/Users/jigenji/Working/interaction/BTBT/')
 from src.make import exec_gjf
-from src.utils import check_calc_status, get_ab_from_params, heri_to_A3
 from src.vdw import vdw_R
 from src.listen import get_E
 import argparse
 import numpy as np
+from scipy import signal
 import scipy.spatial.distance as distance
 import random
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 def init_process(args):
     # 数理モデル的に自然な定義の元のparams initリスト: not yet
     # 結晶学的に自然なパラメータへ変換: not yet
-    # a_init,b_init,thetaのリスト: todo
-    # thetaでgroupbyした計算progress用のdf_progress.to_csv: todo
-    # calc用のdf.to_csv: todo
     auto_dir = args.auto_dir
-    glide = args.glide
-    
+    order = 5
     os.makedirs(os.path.join(auto_dir,'gaussian'), exist_ok=True)
     os.makedirs(os.path.join(auto_dir,'gaussview'), exist_ok=True)
 
-    def get_init_para_csv(auto_dir,glide):
+    def get_init_para_csv(auto_dir):
         init_params_csv = os.path.join(auto_dir, 'step1_init_params.csv')
         
         init_para_list = []
         A1 = 0; A2 = 0
-        for theta in range(0,90,5):
+        for theta in tqdm(range(0,95,5)):
             a_list = []; b_list = []; S_list = []
-            a_clps=vdw_R(A1,A2,theta,0.0,'a','b')
-            b_clps=vdw_R(A1,A2,theta,90.0,'b','b')
-            for theta_ab in theta_ab_list:
-                R_clps=vdw_R(A1,A2,theta,theta_ab,'t',glide_mode)
+            a_clps=vdw_R(A1,A2,theta,0.0,'a')
+            b_clps=vdw_R(A1,A2,theta,90.0,'b')
+            for theta_ab in range(0,91):
+                R_clps=vdw_R(A1,A2,theta,theta_ab,'t')
                 a=2*R_clps*np.cos(np.radians(theta_ab))
                 b=2*R_clps*np.sin(np.radians(theta_ab))
                 if (a_clps > a) or (b_clps > b):
                     continue
                 else:
-                    S=a*b
-                a_list.append(a);b_list.append(b);S_list.append(S)
-            idx_Smin = np.argmin(S_list)
-            init_para_list.append([a_list[idx_Smin],b_list[idx_Smin],theta,glide,'NotYet'])
-        df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['a','b','theta','glide_mode','status'])
+                    a = np.round(a,1);b = np.round(b,1)
+                    a_list.append(a);b_list.append(b);S_list.append(a*b)
+            fig = plt.figure()
+            ax = fig.add_subplot(1,1,1)
+            ax.scatter(a_list,b_list,c=S_list)
+            local_minidx_list = signal.argrelmin(np.array(S_list), order=order)
+            print(local_minidx_list) # --> (array([15]),)
+            if len(local_minidx_list[0])>0:
+                for local_minidx in local_minidx_list[0]:
+                    init_para_list.append([a_list[local_minidx],b_list[local_minidx],theta,'NotYet'])
+                    ax.scatter(a_list[local_minidx],b_list[local_minidx],marker='D')
+            init_para_list.append([a_list[0],b_list[0],theta,'NotYet'])
+            init_para_list.append([a_list[-1],b_list[-1],theta,'NotYet'])
+            ax.scatter(a_list[0],b_list[0],marker='D')
+            ax.scatter(a_list[-1],b_list[-1],marker='D')
+            plt.savefig('order={}_theta={}.png'.format(order,theta))
+            
+        df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['a','b','theta','status'])
         df_init_params.to_csv(init_params_csv,index=False)
     
-    get_init_para_csv(auto_dir, glide)
+    get_init_para_csv(auto_dir)
     
-    auto_csv_path = os.path.join(auto_dir,'step1_auto.csv')
+    auto_csv_path = os.path.join(auto_dir,'step1.csv')
     if not os.path.exists(auto_csv_path):        
-        df_E_init = pd.DataFrame(columns = ['a','b','theta','glide_mode','E','E_p','E_t','machine_type','status','file_name'])
+        df_E_init = pd.DataFrame(columns = ['a','b','theta','E','E_p','E_t','machine_type','status','file_name'])
         df_E_init.to_csv(auto_csv_path,index=False)
 
     df_init=pd.read_csv(os.path.join(auto_dir,'step1_init_params.csv'))
@@ -61,13 +76,13 @@ def main_process(args):
     isOver = False
     while not(isOver):
         #check
-        isOver = listen(args.auto_dir)
+        isOver = listen(args.auto_dir,args.isTest)
         time.sleep(1)
 
-def listen(auto_dir):
+def listen(auto_dir,isTest):
     auto_csv = os.path.join(auto_dir,'step1.csv')
     df_E = pd.read_csv(auto_csv)
-    df_queue = df_E[df_E['status']=='InProgress']
+    df_queue = df_E.loc[df_E['status']=='InProgress',['machine_type','file_name']]
     machine_type_list = df_queue['machine_type'].values.tolist()
     len_queue = len(df_queue)
     
@@ -92,8 +107,8 @@ def listen(auto_dir):
 
     if isAvailable:
         params_dict = get_params_dict(auto_dir)
-        file_name = exec_gjf(auto_dir, params_dict, machine_type,isInterlayer=False)
-        df_newline = pd.Series(params_dict)
+        file_name = exec_gjf(auto_dir, {**params_dict,'cx':0,'cy':0,'cz':0,'A1':0.,'A2':0.}, machine_type,isInterlayer=False,isTest=isTest)
+        df_newline = pd.Series({**params_dict,'E':0.,'E_p':0.,'E_t':0.,'machine_type':machine_type,'status':'InProgress','file_name':file_name})
         df_E=df_E.append(df_newline,ignore_index=True)
         df_E.to_csv(auto_csv,index=False)
     
@@ -112,16 +127,17 @@ def get_params_dict(auto_dir):
     df_init_params = pd.read_csv(init_params_csv)
     df_cur = pd.read_csv(os.path.join(auto_dir, 'step1.csv'))
     df_init_params_inprogress = df_init_params[df_init_params['status']=='InProgress']
-    fixed_param_keys = ['theta','A1','A2']
+    fixed_param_keys = ['theta']
     opt_param_keys = ['a','b']
 
     #最初の立ち上がり時
-    if len(df_init_params[df_init_params['status']=='InProgress']) < 6:
+    print(df_init_params_inprogress)
+    if len(df_init_params_inprogress) < 6:
         df_init_params_notyet = df_init_params[df_init_params['status']=='NotYet']
         for index in df_init_params_notyet.index:
             df_init_params = update_value_in_df(df_init_params,index,'status','InProgress')
             df_init_params.to_csv(init_params_csv,index=False)
-            params_dict = df_init_params.loc[index,fixed_param_keys+opt_param_keys].to_dict()
+            params_dict = df_init_params.loc[index,opt_param_keys+fixed_param_keys].to_dict()
             return params_dict
 
     for index in df_init_params_inprogress.index:
@@ -148,7 +164,7 @@ def get_params_dict(auto_dir):
 
 def get_opt_params_dict(df_cur, fixed_params_dict, opt_param_keys):
     df_val = filter_df(df_cur, fixed_params_dict)
-    a_min,b_min = df_val.iloc[df_val['E'].idxmin()][opt_param_keys].values
+    a_min,b_min = df_val.loc[df_val['E'].idxmin(),opt_param_keys]
 
     #以下同じ
     a_min = np.round(a_min,1);b_min = np.round(b_min,1)
@@ -206,8 +222,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--init',action='store_true')
+    parser.add_argument('--isTest',action='store_true')
     parser.add_argument('--auto-dir',type=str,help='path to dir which includes gaussian, gaussview and csv')
-    parser.add_argument('--glide-mode', type=str, default='a')
     
     args = parser.parse_args()
 
