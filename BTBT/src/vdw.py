@@ -70,7 +70,7 @@ def get_c_vec_vdw(A1,A2,A3,a_,b_,glide_mode='a'):#,name_csv
     
 # theta=arctan(b/a)
 def vdw_R(A1,A2,A3,theta,dimer_mode,glide_mode):
-    df_monomer=pd.read_csv(os.path.join(vdw_path,'monomer.csv'))###x,y,z,rad
+    df_monomer=pd.read_csv('assets/monomer.csv')###x,y,z,rad
     monomer=df_monomer[['X','Y','Z','R']].values
     monomer_1=convertor(monomer,A1,A2,A3)
     glide=180.0 if glide_mode=='a' else 0.0
