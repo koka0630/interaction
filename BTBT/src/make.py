@@ -167,10 +167,10 @@ def make_gjf_xyz(auto_dir,params_dict,isInterlayer):
 def get_file_name_from_dict(paras_dict):
     file_name = 'BTBT'
     for key,val in paras_dict.items():
-        if key == 'a' or key == 'b':
+        if key in ['a','b','cx','cy','cz']:
             val = np.round(val,2)
-        elif key == 'theta':
-            val = np.round(val)
+        elif key in ['A1','A2','theta']:
+            val = int(val)
         file_name += '_{}={}'.format(key,val)
     return file_name + '.inp'
     
