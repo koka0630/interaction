@@ -62,10 +62,9 @@ def init_process(args):
     df_init=pd.read_csv(os.path.join(auto_dir,'step1_init_params.csv'))
     df_init['status']='NotYet'
     df_init.to_csv(os.path.join(auto_dir,'step1_init_params.csv'),index=False)
-    
-    os.chdir(os.path.join(args.auto_dir,'gaussian'))
 
 def main_process(args):
+    os.chdir(os.path.join(args.auto_dir,'gaussian'))
     isOver = False
     while not(isOver):
         #check
@@ -81,7 +80,7 @@ def listen(auto_dir,isTest):
     
     for idx,row in zip(df_queue.index,df_queue.values):
         machine_type,file_name = row
-        log_filepath = os.path.join(auto_dir,file_name)
+        log_filepath = os.path.join(*[auto_dir,'gaussian',file_name])
         if not(os.path.exists(log_filepath)):#logファイルが生成される直前だとまずいので
             continue
         E_list=get_E(log_filepath)
@@ -97,19 +96,30 @@ def listen(auto_dir,isTest):
     isAvailable = len_queue < 6 
     machine2IsFull = machine_type_list.count(2) >= 3
     machine_type = 1 if machine2IsFull else 2
-
     if isAvailable:
         params_dict = get_params_dict(auto_dir)
-        file_name = exec_gjf(auto_dir, {**params_dict,'cx':0,'cy':0,'cz':0,'A1':0.,'A2':0.}, machine_type,isInterlayer=False,isTest=isTest)
-        df_newline = pd.Series({**params_dict,'E':0.,'E_p':0.,'E_t':0.,'machine_type':machine_type,'status':'InProgress','file_name':file_name})
-        df_E=df_E.append(df_newline,ignore_index=True)
-        df_E.to_csv(auto_csv,index=False)
+        alreadyCalculated = check_calc_status(auto_dir,params_dict)
+        if not(alreadyCalculated):
+            file_name = exec_gjf(auto_dir, {**params_dict,'cx':0,'cy':0,'cz':0,'A1':0.,'A2':0.}, machine_type,isInterlayer=False,isTest=isTest)
+            df_newline = pd.Series({**params_dict,'E':0.,'E_p':0.,'E_t':0.,'machine_type':machine_type,'status':'InProgress','file_name':file_name})
+            df_E=df_E.append(df_newline,ignore_index=True)
+            df_E.to_csv(auto_csv,index=False)
     
     init_params_csv=os.path.join(auto_dir, 'step1_init_params.csv')
     df_init_params = pd.read_csv(init_params_csv)
     df_init_params_done = filter_df(df_init_params,{'status':'Done'})
     isOver = True if len(df_init_params_done)==len(df_init_params) else False
     return isOver
+
+def check_calc_status(auto_dir,params_dict):
+    df_E= pd.read_csv(os.path.join(auto_dir,'step1.csv'))
+    df_E_filtered = filter_df(df_E, params_dict)
+    df_E_filtered = df_E_filtered.reset_index(drop=True)
+    try:
+        status = get_values_from_df(df_E_filtered,0,'status')
+        return status=='Done'
+    except KeyError:
+        return False
 
 def get_params_dict(auto_dir):
     """
@@ -125,20 +135,25 @@ def get_params_dict(auto_dir):
 
     #最初の立ち上がり時
     if len(df_init_params_inprogress) < 6:
+        print(1)
         df_init_params_notyet = df_init_params[df_init_params['status']=='NotYet']
         for index in df_init_params_notyet.index:
             df_init_params = update_value_in_df(df_init_params,index,'status','InProgress')
             df_init_params.to_csv(init_params_csv,index=False)
-            params_dict = df_init_params.loc[index,opt_param_keys+fixed_param_keys].to_dict()
+            params_dict = df_init_params.loc[index,fixed_param_keys+opt_param_keys].to_dict()
             return params_dict
-
     for index in df_init_params_inprogress.index:
+        df_init_params = pd.read_csv(init_params_csv)
+        print('index')
+        print(index)
+        init_params_dict = df_init_params.loc[index,fixed_param_keys+opt_param_keys].to_dict()
         fixed_params_dict = df_init_params.loc[index,fixed_param_keys].to_dict()
-        isDone, opt_params_dict = get_opt_params_dict(df_cur, fixed_params_dict, opt_param_keys)
+        isDone, opt_params_dict = get_opt_params_dict(df_cur, init_params_dict,fixed_params_dict)
         if isDone:
             # df_init_paramsのstatusをupdate
             df_init_params = update_value_in_df(df_init_params,index,'status','Done')
             status = get_values_from_df(df_init_params,index+1,'status')
+            df_init_params.to_csv(init_params_csv,index=False)
             
             if status=='NotYet':                
                 opt_params_dict = get_values_from_df(df_init_params,index+1,opt_param_keys)
@@ -149,50 +164,32 @@ def get_params_dict(auto_dir):
                 continue
 
         else:
-            df_inprogress = filter_df(df_cur, {**fixed_params_dict,'status':'InProgress'})
-            if len(df_inprogress)==1:
+            df_inprogress = filter_df(df_cur, {**fixed_params_dict,**opt_params_dict,'status':'InProgress'})
+            print(df_inprogress)
+            if len(df_inprogress)>=1:
+                print('continue')
                 continue
             return {**fixed_params_dict,**opt_params_dict}
 
-def get_opt_params_dict(df_cur, fixed_params_dict, opt_param_keys):
-    df_val = filter_df(df_cur, fixed_params_dict)
-    a_min,b_min = df_val.loc[df_val['E'].idxmin(),opt_param_keys]
-
-    #以下同じ
-    a_min = np.round(a_min,1);b_min = np.round(b_min,1)
-    E_list = []; ab_done_list = []; ab_yet_list = []; ab_inProgress_list = []
-    isDone = True
-    for a in [a_min-0.1,a_min,a_min+0.1]:
-        for b in [b_min-0.1,b_min,b_min+0.1]:
-            a = np.round(a,1);b = np.round(b,1)
-            df_val_ab = df_val[(df_val['a']==a)&(df_val['b']==b)]
-            if len(df_val_ab)==0:
-                isDone = False
-                ab_yet_list.append([a,b])
-            else:
-                status = df_val_ab['status'].values[0]
-                if status=='Done':
-                    E_list.append(df_val_ab['E'].values[0])
-                    ab_done_list.append([a,b])
-                elif status=='InProgress':
-                    isDone = False
-                    ab_inProgress_list.append([a,b])
-    if isDone:
-        return isDone, {'a':a_min, 'b':b_min}
-    else:
-        if len(ab_done_list)==0:#一点目なら
-            a,b = random.choice(ab_yet_list)#np.arange(len(ab_yet_list)))
-            return isDone, {'a':a, 'b':b}
-        if len(ab_yet_list)==0:#計算すべきものが全てInProgressなら
-            a,b = random.choice(ab_inProgress_list) #正味abはなんでもいい
-            return isDone, {'a':a, 'b':b}
-        E_array = np.array(E_list);E_array /= np.sum(E_array);E_weight = np.abs(E_array)
-        ab_done_array = np.array(ab_done_list);ab_yet_array = np.array(ab_yet_list)
-        ab_done_avg = np.average(ab_done_array, axis=0, weights=E_weight).reshape(1,2)
-        dist = distance.cdist(ab_yet_array,ab_done_avg)
-        a,b=ab_yet_array[np.argmin(dist)]
-        return isDone, {'a':a, 'b':b}
         
+def get_opt_params_dict(df_cur, init_params_dict,fixed_params_dict):
+    df_val = filter_df(df_cur, fixed_params_dict)
+    a_init_prev = init_params_dict['a']; b_init_prev = init_params_dict['b']; theta = init_params_dict['theta']
+    while True:
+        E_list=[];ab_list=[]
+        for a in [a_init_prev-0.1,a_init_prev,a_init_prev+0.1]:
+            for b in [b_init_prev-0.1,b_init_prev,b_init_prev+0.1]:
+                a = np.round(a,1);b = np.round(b,1)
+                df_val_ab = df_val[(df_val['a']==a)&(df_val['b']==b)&(df_val['theta']==theta)&(df_val['status']=='Done')]
+                if len(df_val_ab)==0:
+                    return False,{'a':a,'b':b}
+                ab_list.append([a,b]);E_list.append(df_val_ab['E'].values[0])
+        a_init,b_init = ab_list[np.argmin(np.array(E_list))]
+        if a_init==a_init_prev and b_init==b_init_prev:
+            return True,{'a':a_init,'b':b_init}
+        else:
+            a_init_prev=a_init;b_init_prev=b_init
+
 def get_values_from_df(df,index,key):
     return df.loc[index,key]
 
