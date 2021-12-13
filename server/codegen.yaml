@@ -1,0 +1,47 @@
+overwrite: true
+schema:
+  - './apollo/**/*.tsx'
+  - './features/**/server/**/*.ts'
+generates:
+  generated/graphql-resolvers.d.ts:
+    preset: import-types
+    presetConfig:
+      typesPath: ./graphql-schema
+      importTypesNamespace: Types
+    plugins:
+      - "typescript-resolvers"
+      - add:
+          # This is needed for import-types to work together with typescript-resolvers.
+          # https://github.com/dotansimha/graphql-code-generator/discussions/4830
+          content: "import * as Types from './graphql-schema';"
+    config:
+      useIndexSignature: true
+      contextType: ../apollo/context#Context
+  generated/graphql-schema.ts:
+    # File that includes base types and enums defined in our GraphQL schema
+    plugins:
+      - "typescript"
+      # - "typescript-operations"
+      # - "typescript-react-apollo"
+      # - "typescript-graphql-files-modules"
+      # - "typescript-document-nodes"
+      # - "fragment-matcher"
+    # config:
+    #   withComponent: true
+    #   withHooks: true
+    #   withMutationFn: true
+    #   withMutationOptionsType: true
+    #   addDocBlocks: true
+  features/:
+    # generates *.generated.ts for each *.graphql files that include Hooks for queries and mutations
+    documents: "features/**/client/**/*.graphql"
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: ../generated/graphql-schema
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+
+

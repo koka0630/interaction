@@ -1,0 +1,6 @@
+dist/
+build/
+.next
+# gereneated by graphql-code-generator
+generated
+*.generated.ts
