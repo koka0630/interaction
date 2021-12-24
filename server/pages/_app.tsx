@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
 import client from '../lib/apolloClient';
 import Head from 'next/head';
+import PrivateLayout from '../components/PrivateLayout';
 
 
 function App({ Component, pageProps }: AppProps) {
@@ -14,9 +15,11 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>interaction</title>
       </Head>
-
+      
       <ApolloProvider client={client}>
-        <Component {...pageProps} />
+        <PrivateLayout>
+          <Component {...pageProps} />
+        </PrivateLayout>
       </ApolloProvider>
     </>
   );

@@ -1,7 +1,6 @@
 overwrite: true
 schema:
   - './apollo/**/*.tsx'
-  - './features/**/server/**/*.ts'
 generates:
   generated/graphql-resolvers.d.ts:
     preset: import-types
@@ -32,16 +31,5 @@ generates:
     #   withMutationFn: true
     #   withMutationOptionsType: true
     #   addDocBlocks: true
-  features/:
-    # generates *.generated.ts for each *.graphql files that include Hooks for queries and mutations
-    documents: "features/**/client/**/*.graphql"
-    preset: near-operation-file
-    presetConfig:
-      baseTypesPath: ../generated/graphql-schema
-    plugins:
-      - typescript-operations
-      - typescript-react-apollo
-    config:
-      withHooks: true
 
 

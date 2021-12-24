@@ -1,12 +1,12 @@
 import { makeExecutableSchema } from 'apollo-server-micro';
 import { merge } from 'lodash';
-// import { typeDefs as Step1, resolvers as step1Resolvers } from './modules/step1';
+import { typeDefs as Vdw, resolvers as vdwResolvers } from './modules/vdw';
 export const schema = makeExecutableSchema({
     typeDefs: [
-        // Step1,
+        Vdw,
     ],
-    // resolvers: merge(
-    //     step1Resolvers,
-    // ),
+    resolvers: merge(
+        vdwResolvers,
+    ),
   });
   
