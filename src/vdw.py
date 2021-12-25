@@ -37,7 +37,13 @@ def get_c_vec_vdw(monomer_name,A1,A2,a_,b_,theta):#,name_csv
         z_list.append(z_max)
         V_list.append(a_*b_*z_max)
     
-    return np.array([0,Rb_list[np.argmin(V_list)],z_list[np.argmin(V_list)]])
+    c_list = []
+    local_minidx_list = signal.argrelmin(np.array(V_list), order=5)
+    if len(local_minidx_list[0])>0:
+        for local_minidx in local_minidx_list[0]:
+            c_list.append(np.array([0,Rb_list[local_minidx],z_list[local_minidx]]))
+            
+    return c_list
     
 # theta=arctan(b/a)
 def vdw_R(A1,A2,A3,theta,dimer_mode,monomer_name):

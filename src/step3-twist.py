@@ -30,8 +30,9 @@ def init_process(args):
         print(inner_zip)
         init_para_list = []
         for a,b,theta,A1,A2 in tqdm(inner_zip):
-            c = get_c_vec_vdw(monomer_name,A1,A2,a,b,theta)
-            init_para_list.append([np.round(a,1),np.round(b,1),theta,A1,A2,np.round(c[0],1),np.round(c[1],1),np.round(c[2],1),'NotYet'])
+            c_list = get_c_vec_vdw(monomer_name,A1,A2,a,b,theta)
+            for c in c_list:
+                init_para_list.append([np.round(a,1),np.round(b,1),theta,A1,A2,np.round(c[0],1),np.round(c[1],1),np.round(c[2],1),'NotYet'])
         
         df_init_params = pd.DataFrame(np.array(init_para_list),columns = ['a','b','theta','A1','A2','cx','cy','cz','status'])
         df_init_params.to_csv(init_params_csv,index=False)
@@ -65,7 +66,8 @@ def listen(args):
     isTest = args.isTest
     fixed_param_keys = ['A1','A2']
     opt_param_keys = ['a','b','theta','cx','cy','cz']
-
+    
+    auto_step2_dir = "/home/koyama/Working/interaction/{}/step2-twist/".format(monomer_name)
     auto_step2_csv = '/home/koyama/Working/interaction/{}/step2-twist/step2-twist.csv'.format(monomer_name)
     df_step2 = pd.read_csv(auto_step2_csv)
     
@@ -92,13 +94,21 @@ def listen(args):
                 Ep, Et = df_step2[(df_step2['A1']==A1)&(df_step2['A2']==A2)&(df_step2['theta']==theta)&(df_step2['a']==a)&(df_step2['b']==b)][['E_p','E_t']].values[0]
             except IndexError:
                 inner_params_dict = {"A1":A1,"A2":A2,"a":a,"b":b,"theta":theta,'cx':0,'cy':0,'cz':0}
-                inner_file_name = exec_gjf(auto_dir, monomer_name, inner_params_dict, machine_type,isInterlayer=False,isTest=isTest)
+                os.chdir(os.path.join(auto_step2_dir,'gaussian'))
+                inner_file_name = exec_gjf(auto_step2_dir, monomer_name, inner_params_dict, machine_type,isInterlayer=False,isTest=isTest)
+                os.chdir(os.path.join(auto_dir,'gaussian'))
                 time.sleep(200)#1:40で1計算終わる
                 is_inner_over = False
                 while not(is_inner_over):
                     time.sleep(30)#1:40で1計算終わる
-                    E_inner_list=get_E(inner_file_name)
-                    is_inner_over = len(E_inner_list)==2
+                    inner_log_filepath = os.path.join(*[auto_step2_dir,'gaussian',inner_file_name])
+                    if os.path.exists(inner_log_filepath):#logファイルが生成される直前だとまずいので
+                        E_inner_list=get_E(inner_log_filepath)
+                        is_inner_over = len(E_inner_list)==2
+                    print("is_inner_over")
+                    print(is_inner_over)
+                    print("inner_log_filepath")
+                    print(inner_log_filepath)
                 Ep, Et=map(float,E_inner_list)
                 df_newline = pd.Series({**inner_params_dict,'E':2*Ep+4*Et,'E_p':Ep,'E_t':Et,'machine_type':machine_type,'status':'Done','file_name':inner_file_name})
                 df_step2=df_step2.append(df_newline,ignore_index=True)

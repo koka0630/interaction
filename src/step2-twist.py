@@ -31,8 +31,8 @@ def init_process(args):
         init_params_csv = os.path.join(auto_dir, 'step2-twist_init_params.csv')
         
         init_para_list = []
-#         A1_list =[0]; A2_list = [1,2,3,4,26,27,28,29,31,32,33,34,36,37,38,39]
-        A1_list =[-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20]; A2_list = [32]
+#         A1_list =[0]; A2_list = [1,10,15,20,25,30,31,32,33,34,35,36,40]
+        A1_list =[0,-5,-10, -1,-2,-3,-4,-6,-7,-8,-9,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20]; A2_list = [34]
 #         A1_list =[0,-5,-10]; A2_list = [0,5,10,15,20,25,30,35,40]
         
         df_step1 = pd.read_csv(step1_params_csv)

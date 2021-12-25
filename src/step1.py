@@ -28,7 +28,8 @@ def init_process(args):
         
         init_para_list = []
         A1 = 0; A2 = 0
-        theta_list = list(range(0,95,5)) + [22.5,23.0,23.5,24.0,24.5] + [25.5,26.0,26.5,27.0,27.5]
+#         theta_list = list(range(0,95,5)) + [22.5,23.0,23.5,24.0,24.5] + [25.5,26.0,26.5,27.0,27.5]
+        theta_list = list(range(0,50,5)) + [22.5,23.0,23.5,24.0,24.5] + [25.5,26.0,26.5,27.0,27.5]
         for theta in tqdm(theta_list):
             a_list = []; b_list = []; S_list = []
             a_clps=vdw_R(A1,A2,theta,0.0,'a',monomer_name)
@@ -40,8 +41,9 @@ def init_process(args):
                 if (a_clps > a) or (b_clps > b):
                     continue
                 else:
+                    S_list.append(a*b)
                     a = np.round(a,1);b = np.round(b,1)
-                    a_list.append(a);b_list.append(b);S_list.append(a*b)
+                    a_list.append(a);b_list.append(b);
             local_minidx_list = signal.argrelmin(np.array(S_list), order=order)
             if len(local_minidx_list[0])>0:
                 for local_minidx in local_minidx_list[0]:
@@ -80,7 +82,7 @@ def listen(auto_dir,monomer_name,num_nodes,isTest):
     df_queue = df_E.loc[df_E['status']=='InProgress',['machine_type','file_name']]
     machine_type_list = df_queue['machine_type'].values.tolist()
     len_queue = len(df_queue)
-    maxnum_machine2 = 2#int(num_nodes/2)
+    maxnum_machine2 = 3#int(num_nodes/2)
     
     for idx,row in zip(df_queue.index,df_queue.values):
         machine_type,file_name = row
