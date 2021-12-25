@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useStopwatch } from "react-timer-hook";
 import { getDimerVdwOrbit } from '../apollo/modules/vdw'
 import { Canvas } from "react-three-fiber";
 import Slider from '@material-ui/core/Slider';
@@ -61,23 +60,26 @@ export const data = {
   ],
 };
 
-function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName: string}) {
+function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName: string, initStep: number}) {
   const [a,setA]=useState<number>(8.0)
   const [b,setB]=useState<number>(6.0)
   const [theta,setTheta]=useState<number>(25)
   const [A1,setA1]=useState<number>(0)
   const [A2,setA2]=useState<number>(0)
-  
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(props.initStep);
 
   useEffect(function() {
     const intervalId = setInterval(function() {
-      setStep(step + 1);
-      setA(props.parameters[step].a)
-      setB(props.parameters[step].b)
-      setTheta(props.parameters[step].theta)
-      setA1(props.parameters[step].A1)
-      setA2(props.parameters[step].A2)
+      if (step < props.parameters.length - 1) {
+        setStep(step + 1);
+        setA(props.parameters[step].a)
+        setB(props.parameters[step].b)
+        setTheta(props.parameters[step].theta)
+        setA1(props.parameters[step].A1)
+        setA2(props.parameters[step].A2)
+      } else {
+        setStep(props.initStep);
+      }
     }, 50);
     return function(){clearInterval(intervalId)};
   }, [step]);
@@ -92,23 +94,23 @@ function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName: string
 function HomePage() {
   // TODO こちらもフロント定義ではなく、バックエンドで出力されるようにする
   const [theta,setTheta]=useState<number>(25)
+  const [initStep,setInitStep]=useState<number>(0)
   const A1 = 0
   const A2 = 0
   const onChangeTheta = (event: object, value: number | number[]) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     setTheta(normalizedValue)
+    setInitStep(0)
   };
   
   // これはフロント定義
   const monomerName = 'anthracene'
 
-  // 
-  const [positions, colors] = useMemo(() => {
+  // 探索するパラメータと軌跡の定義
+  const [parameters, positions, colors] = useMemo(() => {
     const positions: number[] = []
     const colors: number[] = []
     const { distanceCollisionArray, phiArray } = getDimerVdwOrbit(A1,A2,theta,monomerName)
-    console.log('phiArray')
-    console.log(phiArray[phiArray.length-1])
     distanceCollisionArray.map(
       (distanceCollision, index) => {
         const phi = phiArray[index]
@@ -118,24 +120,20 @@ function HomePage() {
         colors.push(1)
         colors.push(0)
         colors.push(0)
-        if (index===0){
-          console.log('positions')
-          console.log(positions[0])
-        }
     });
-    return [ new Float32Array(positions), new Float32Array(colors)]
-  }, [theta])
-  const parameters: CrystalProps[] = [] 
-  for (let index = 0; index < positions.length; index++) {
-    const parameter = {
-      a: 2 * positions[3 * index],
-      b: 2 * positions[3 * index + 1],
-      theta: theta,
-      A1: A1,
-      A2: A2,
+    const parameters: CrystalProps[] = [] 
+    for (let index = 0; index < (positions.length/3); index++) {
+      const parameter = {
+        a: 2 * positions[3 * index],
+        b: 2 * positions[3 * index + 1],
+        theta: theta,
+        A1: A1,
+        A2: A2,
+      }
+      parameters.push(parameter)
     }
-    parameters.push(parameter)
-  }
+    return [ parameters, new Float32Array(positions), new Float32Array(colors)]
+  }, [theta])
   
   // 後でクリックした時パラメータを参照できるようにする
   const attrib = useRef()
@@ -149,7 +147,7 @@ function HomePage() {
             <ambientLight intensity={0.75} />
             <spotLight position={[30, 30, 30]} penumbra={1} angle={0.2} color="white" castShadow shadow-mapSize={[512, 512]} />
             <directionalLight position={[0, 5, -4]} intensity={1} />
-            <AnimatedCrystal parameters={parameters} monomerName={monomerName}/>
+            <AnimatedCrystal parameters={parameters} monomerName={monomerName} initStep={initStep}/>
             <points>
               <bufferGeometry attach="geometry">
                 <bufferAttribute ref={attrib} attachObject={["attributes", "position"]} count={positions.length / 3} array={positions} itemSize={3} needsUpdate={true}/>
