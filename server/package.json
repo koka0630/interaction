@@ -2,6 +2,11 @@
     "name": "core",
     "version": "0.1.0",
     "private": true,
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false
+    },
     "scripts": {
         "dev": "NODE_OPTIONS='--inspect' next dev",
         "generate": "run-p generate:*",
@@ -32,6 +37,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-modern-calendar-datepicker": "^3.1.6",
+        "react-papaparse": "^3.18.1",
         "react-scripts": "^4.0.3",
         "react-three-fiber": "^6.0.13",
         "react-timer-hook": "^3.0.5",
