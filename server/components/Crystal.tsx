@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useMemo,useState } from "react";
+import React, { useEffect, useRef, useMemo,useState } from "react";
 // import { gql, useQuery } from '@apollo/client';
 // import { GetDimerVdwOrbitOutput } from '../generated/graphql-schema';
 
@@ -89,4 +89,36 @@ const Crystal: React.FC<CrystalProps> = (props) => {
   )
 }
 
-export default Crystal
+export function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName: string, initStep: number}) {
+  const [a,setA]=useState<number>(8.0)
+  const [b,setB]=useState<number>(6.0)
+  const [theta,setTheta]=useState<number>(25)
+  const [A1,setA1]=useState<number>(0)
+  const [A2,setA2]=useState<number>(0)
+  const [step, setStep] = useState(props.initStep);
+
+  useEffect(function() {
+    const intervalId = setInterval(function() {
+      console.log(step)
+      console.log(props.parameters)
+      if (step < props.parameters.length - 1) {
+        setStep(step + 1);
+        setA(props.parameters[step].a)
+        setB(props.parameters[step].b)
+        setTheta(props.parameters[step].theta)
+        setA1(props.parameters[step].A1)
+        setA2(props.parameters[step].A2)
+      } else {
+        setStep(props.initStep);
+      }
+    }, 50);
+    return function(){clearInterval(intervalId)};
+  }, [step]);
+
+  return ( 
+    <group>
+      <Crystal a={a} b={b} theta={theta} A1={A1} A2={A2}/>
+    </group>
+    )
+}
+export default AnimatedCrystal
