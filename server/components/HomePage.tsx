@@ -51,23 +51,6 @@ export interface ChartStep1Props {
   currentTheta: number;
 }
 
-// export const ChartStep1: React.FC<ChartStep1Props> = (props) => {
-  
-//   const recordsFilteredByTheta: Record[] = props.records.filter((value:Record) => {value.theta===props.currentTheta})
-//   const plot2 = {
-//     labels: recordsFilteredByTheta.map((record: Record) => {return record.E}),
-//     datasets: [
-//       {
-//         label: "格子に対するエネルギーマップ",
-//         data: recordsFilteredByTheta.map((record: Record) => {return [record.a,record.b]}),
-//         backgroundColor: "rgba(0, 0, 255, 0.5)",
-//         pointRadius: 8,
-//       },
-//     ],
-//   };
-//   return <Scatter data={plot2} />
-// }
-
 function HomePage() {
   // TODO こちらもフロント定義ではなく、バックエンドで出力されるようにする
   const [theta,setTheta]=useState<number>(25)
