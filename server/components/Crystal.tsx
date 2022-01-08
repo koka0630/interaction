@@ -72,7 +72,7 @@ const Molucule: React.FC<MoluculeProps> = (props) => {
   );
 };
 
-const Crystal: React.FC<CrystalProps> = (props) => {
+export const Crystal: React.FC<CrystalProps> = (props) => {
   const { a, b, theta, A1=0, A2=0 } = props;
   return (
     <group>
@@ -99,8 +99,6 @@ export function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName:
 
   useEffect(function() {
     const intervalId = setInterval(function() {
-      console.log(step)
-      console.log(props.parameters)
       if (step < props.parameters.length - 1) {
         setStep(step + 1);
         setA(props.parameters[step].a)
@@ -121,4 +119,4 @@ export function AnimatedCrystal(props: {parameters: CrystalProps[], monomerName:
     </group>
     )
 }
-export default AnimatedCrystal
+export default Crystal
