@@ -162,8 +162,6 @@ function HomePage() {
         <div className="relative flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
           {/* <Line options={options} data={data} onClick={function() {}}/>
           <Line options={options} data={data} onClick={function() {}}/> */}
-          {/* TODO 元データをtheta順にsort */}
-          {/* TODO thetaごとにabマップを変換 */}
           <Scatter data={plot1} />
           <Scatter data={plot2} />
           {/* <ChartStep1 currentTheta={records[step].theta} records={records}/> */}
