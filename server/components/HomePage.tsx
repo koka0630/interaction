@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Canvas } from "react-three-fiber";
-import Slider from '@material-ui/core/Slider';
+import Slider, { Mark } from '@material-ui/core/Slider';
 import { CameraControls } from "./CameraControls";
 import Crystal, { CrystalProps } from './Crystal'
 import CsvReader, { Record } from "./CsvReader";
@@ -49,19 +49,33 @@ export interface ChartStep1Props {
 function HomePage() {
   // TODO こちらもフロント定義ではなく、バックエンドで出力されるようにする
   const [theta,setTheta]=useState<number>(25)
-  const [step,setStep]=useState<number>(0)
-  const onChangeStep = (event: object, value: number | number[]) => {
+  const [axisA,setAxisA]=useState<number>(8.0)
+  const [axisB,setAxisB]=useState<number>(6.0)
+  const onChangeAxisA = (event: object, value: number | number[]) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
-    setStep(normalizedValue)
+    setAxisA(normalizedValue)
   };
+  
+  const onChangeAxisB = (event: object, value: number | number[]) => {
+    const normalizedValue = Array.isArray(value) ? value[0] : value;
+    setAxisB(normalizedValue)
+  };
+  
+  const onChangeTheta = (event: object, value: number | number[]) => {
+    const normalizedValue = Array.isArray(value) ? value[0] : value;
+    setTheta(normalizedValue)
+    setAxisA(theta2Emin[normalizedValue].a)
+    setAxisB(theta2Emin[normalizedValue].b)
+  };
+  
   const [records, setRecords] = useState<Record[]>([{a:8.0,b:6.0,theta:25,E:0.0,E_t:0.0,E_p:0.0}])
   
   // これはフロント定義
   const monomerName = 'anthracene'
 
   // 探索するパラメータと軌跡の定義
-  const [parameters, plot1, plot2] = useMemo(() => {
-    setTheta(records[step].theta)
+  const [theta2Emin, plot1, plot2] = useMemo(() => {
+    // setTheta(records[step].theta)
     const parameters: CrystalProps[] = [] 
     for (const record of records) {
       const parameter = {
@@ -74,18 +88,32 @@ function HomePage() {
       parameters.push(parameter)
     }
     
-    const theta2Emin: { [theta: number]: number } = {}
+    const theta2Emin: { [theta: number]: {
+      a: number;
+      b: number;
+      Emin: number;
+    } } = {}
     for (const record of records){
       if (record.theta in theta2Emin){
-        theta2Emin[record.theta]=Math.min(record.E,theta2Emin[record.theta])
+        if (record.E < theta2Emin[record.theta].Emin){
+          theta2Emin[record.theta]={
+            a: record.a,
+            b: record.b,
+            Emin: record.E
+          }
+        }
       } else {
-        theta2Emin[record.theta]=record.E
+        theta2Emin[record.theta]={
+          a: record.a,
+          b: record.b,
+          Emin: record.E
+        }
       }
     }
     
     const data1: number[][] = []
     for (const theta in theta2Emin){
-      data1.push([Number(theta), theta2Emin[theta]])
+      data1.push([Number(theta), theta2Emin[theta].Emin])
     }
 
     const plot1 = {
@@ -98,7 +126,7 @@ function HomePage() {
         },
         {
           label: "現在の構造",
-          data: [[records[step].theta,theta2Emin[records[step].theta]]],
+          data: [[theta,theta2Emin[theta].Emin]],
           backgroundColor: "rgba(255, 0, 0, 1)",
           pointRadius: 16,
         },
@@ -107,7 +135,7 @@ function HomePage() {
 
     const recordsFilteredByTheta: Record[] = []
     records.forEach( value => {
-      if (value.theta===records[step].theta){
+      if (value.theta===theta){
         recordsFilteredByTheta.push(value)
       }})
     const plot2 = {
@@ -117,19 +145,35 @@ function HomePage() {
           label: "格子に対するエネルギーマップ",
           data: recordsFilteredByTheta.map((record: Record) => {return [record.a,record.b]}),
           backgroundColor: "rgba(0, 0, 255, 0.5)",
-          pointRadius: 8,
+          pointRadius: 2,
         },
         {
           label: "現在の構造",
-          data: [[records[step].a,records[step].b]],
+          data: [[axisA,axisB]],
           backgroundColor: "rgba(255, 0, 0, 1)",
           pointRadius: 16,
         },
       ],
     };
     
-  return [ parameters, plot1, plot2]
-  }, [records, step])
+  return [ theta2Emin, plot1, plot2]
+  }, [records, axisA, axisB, theta])
+
+  const marks = Object.keys(theta2Emin).map(
+    (theta)=>{
+      const mark = 
+      {
+        value: parseFloat(theta)
+      }
+      return mark
+    }
+  )
+  const options = {
+    scales: {
+      x:  {min: 3, max: 15} ,
+      yAxes: {min: 3, max: 15},
+    }
+  }
 
   return (
     <div className="overflow-hidden h-full min-height:0">
@@ -140,22 +184,15 @@ function HomePage() {
             <ambientLight intensity={0.75} />
             <spotLight position={[30, 30, 30]} penumbra={1} angle={0.2} color="white" castShadow shadow-mapSize={[512, 512]} />
             <directionalLight position={[0, 5, -4]} intensity={1} />
-            <Crystal a={records[step].a} b={records[step].b} theta={records[step].theta} A1={records[step]?.A1 ?? 0} A2={records[step]?.A2 ?? 0}/>
+            <Crystal a={axisA} b={axisB} theta={theta} A1={0} A2={0}/>
           </Canvas>
-          <Slider 
-            value={step}
-            aria-label="Default"
-            valueLabelDisplay="on"
-            step={1}
-            // marks={thetaArray.map((theta) => {return {value: theta}})}
-            min={0}
-            max={records.length}
-            onChange={onChangeStep}
-            />
+          <Slider value={theta} aria-label="Default" valueLabelDisplay="on" marks={marks} step={null} onChange={onChangeTheta}/>
+          <Slider value={axisA} aria-label="Default" valueLabelDisplay="on" step={0.1} min={3} max={15} onChange={onChangeAxisA}/>
+          <Slider value={axisB} aria-label="Default" valueLabelDisplay="on" step={0.1} min={3} max={15} onChange={onChangeAxisB}/>
         </div>
         <div className="relative flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
           <Scatter data={plot1} />
-          <Scatter data={plot2} />
+          <Scatter data={plot2} options={options}/>
           <CsvReader setRecords={setRecords}/>
         </div>
       </div>
