@@ -15,12 +15,7 @@ import {
   Legend,
 } from 'chart.js';
 
-import Highcharts from "highcharts/highstock";
-import Hc3D from "highcharts/highcharts-3d";
-//import HighchartsReact from "./HighchartsReact.js";
-import HighchartsReact from "highcharts-react-official";
-
-import { Line, Scatter } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -146,7 +141,6 @@ function HomePage() {
             <spotLight position={[30, 30, 30]} penumbra={1} angle={0.2} color="white" castShadow shadow-mapSize={[512, 512]} />
             <directionalLight position={[0, 5, -4]} intensity={1} />
             <Crystal a={records[step].a} b={records[step].b} theta={records[step].theta} A1={records[step]?.A1 ?? 0} A2={records[step]?.A2 ?? 0}/>
-            {/* <AnimatedCrystal parameters={parameters} monomerName={monomerName} initStep={initStep}/> */}
           </Canvas>
           <Slider 
             value={step}
@@ -160,11 +154,8 @@ function HomePage() {
             />
         </div>
         <div className="relative flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
-          {/* <Line options={options} data={data} onClick={function() {}}/>
-          <Line options={options} data={data} onClick={function() {}}/> */}
           <Scatter data={plot1} />
           <Scatter data={plot2} />
-          {/* <ChartStep1 currentTheta={records[step].theta} records={records}/> */}
           <CsvReader setRecords={setRecords}/>
         </div>
       </div>
