@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Canvas } from "react-three-fiber";
 import Slider, { Mark } from '@material-ui/core/Slider';
+import Typography from '@mui/material/Typography';
+
 import { CameraControls } from "./CameraControls";
 import Crystal, { CrystalProps } from './Crystal'
 import CsvReader, { Record } from "./CsvReader";
@@ -14,7 +16,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-
+import { getDimerVdwOrbit } from '../apollo/modules/vdw'
 import { Scatter } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -54,6 +56,12 @@ function HomePage() {
   const onChangeAxisA = (event: object, value: number | number[]) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     setAxisA(normalizedValue)
+    const nearestVdwAxisA = vdwAxisArray.map(([_a,_b]) => _a).reduce(function(prev, curr) {
+      return (Math.abs(curr - normalizedValue) < Math.abs(prev - normalizedValue) ? curr : prev);
+    })
+    const nearestVdwAxis = vdwAxisArray.filter(([_a,_b]) => nearestVdwAxisA===_a)
+    const nearestVdwAxisB = nearestVdwAxis[0][1]
+    setAxisB(parseFloat(nearestVdwAxisB.toFixed(1)))
   };
   
   const onChangeAxisB = (event: object, value: number | number[]) => {
@@ -74,7 +82,7 @@ function HomePage() {
   const monomerName = 'anthracene'
 
   // 探索するパラメータと軌跡の定義
-  const [theta2Emin, plot1, plot2] = useMemo(() => {
+  const [vdwAxisArray, theta2Emin, plot1, plot2] = useMemo(() => {
     // setTheta(records[step].theta)
     const parameters: CrystalProps[] = [] 
     for (const record of records) {
@@ -138,25 +146,48 @@ function HomePage() {
       if (value.theta===theta){
         recordsFilteredByTheta.push(value)
       }})
+    
+    const { distanceCollisionArray, phiArray } = getDimerVdwOrbit(0,0,theta,monomerName)
+    const vdwAxisArray: number[][] = []
+    distanceCollisionArray.map(
+      (distanceCollision, index) => {
+        const phi = phiArray[index]
+        vdwAxisArray.push(
+          [
+          2 * distanceCollision * Math.cos(Math.PI*phi/180),
+          2 * distanceCollision * Math.sin(Math.PI*phi/180)
+        ]
+      )
+    });
+
+    const nearestVdwAxisA = vdwAxisArray.map(([_a,_b]) => _a).reduce(function(prev, curr) {
+      return (Math.abs(curr - axisA) < Math.abs(prev - axisA) ? curr : prev);
+    })
     const plot2 = {
-      labels: recordsFilteredByTheta.map((record: Record) => {return record.E}),
+      // labels: recordsFilteredByTheta.map((record: Record) => {return record.E}),
       datasets: [
+        // {
+        //   label: "格子に対するエネルギーマップ",
+        //   data: recordsFilteredByTheta.map((record: Record) => {return [record.a,record.b]}),
+        //   backgroundColor: "rgba(0, 0, 255, 0.5)",
+        //   pointRadius: 2,
+        // },
         {
-          label: "格子に対するエネルギーマップ",
-          data: recordsFilteredByTheta.map((record: Record) => {return [record.a,record.b]}),
+          label: "a - 面積",
+          data: vdwAxisArray.map(([_a,_b]) => {return [_a, _a * _b]}),
           backgroundColor: "rgba(0, 0, 255, 0.5)",
           pointRadius: 2,
         },
         {
           label: "現在の構造",
-          data: [[axisA,axisB]],
+          data: vdwAxisArray.filter(([_a,_b]) => nearestVdwAxisA===_a).map(([_a,_b]) => {return [_a, _a * _b]}),
           backgroundColor: "rgba(255, 0, 0, 1)",
           pointRadius: 16,
         },
       ],
     };
     
-  return [ theta2Emin, plot1, plot2]
+  return [ vdwAxisArray, theta2Emin, plot1, plot2]
   }, [records, axisA, axisB, theta])
 
   const marks = Object.keys(theta2Emin).map(
@@ -170,8 +201,8 @@ function HomePage() {
   )
   const options = {
     scales: {
-      x:  {min: 3, max: 15} ,
-      yAxes: {min: 3, max: 15},
+      x:  {min: 3, max: 15},
+      y: {min: 40, max: 60},
     }
   }
 
@@ -186,13 +217,13 @@ function HomePage() {
             <directionalLight position={[0, 5, -4]} intensity={1} />
             <Crystal a={axisA} b={axisB} theta={theta} A1={0} A2={0}/>
           </Canvas>
-          <Slider value={theta} aria-label="Default" valueLabelDisplay="on" marks={marks} step={null} onChange={onChangeTheta}/>
-          <Slider value={axisA} aria-label="Default" valueLabelDisplay="on" step={0.1} min={3} max={15} onChange={onChangeAxisA}/>
-          <Slider value={axisB} aria-label="Default" valueLabelDisplay="on" step={0.1} min={3} max={15} onChange={onChangeAxisB}/>
         </div>
         <div className="relative flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
           <Scatter data={plot1} />
+          <Slider value={theta} aria-label="Default" valueLabelDisplay="auto" marks={marks} step={null} onChange={onChangeTheta}/>
           <Scatter data={plot2} options={options}/>
+          <Slider value={axisA} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={3} max={15} onChange={onChangeAxisA}/>
+          <Slider value={axisB} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={3} max={15} onChange={onChangeAxisB}/>
           <CsvReader setRecords={setRecords}/>
         </div>
       </div>
