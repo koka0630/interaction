@@ -164,14 +164,7 @@ function HomePage() {
       return (Math.abs(curr - axisA) < Math.abs(prev - axisA) ? curr : prev);
     })
     const plot2 = {
-      // labels: recordsFilteredByTheta.map((record: Record) => {return record.E}),
       datasets: [
-        // {
-        //   label: "格子に対するエネルギーマップ",
-        //   data: recordsFilteredByTheta.map((record: Record) => {return [record.a,record.b]}),
-        //   backgroundColor: "rgba(0, 0, 255, 0.5)",
-        //   pointRadius: 2,
-        // },
         {
           label: "a - 面積",
           data: vdwAxisArray.map(([_a,_b]) => {return [_a, _a * _b]}),
