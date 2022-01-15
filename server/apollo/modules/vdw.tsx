@@ -210,7 +210,34 @@ ${monomer2.map((xyzr,index) => {
 
 `
     return gjfLines
+}
 
+export function makeExe(machine_type: number, file_name: string){
+    const gr_num = machine_type==1 ? 1 : 2
+    const mp_num = machine_type==1 ? 40 : 52
+    const fileName = 'test'
+    const exeLines = `#!/bin/sh
+#$ -S /bin/sh
+#$ -cwd
+#$ -V
+#$ -q gr${gr_num}.q
+#$ -pe OpenMP ${mp_num}
+
+hostname
+
+export g16root=/home/g03
+source $g16root/g16/bsd/g16.profile
+
+export GAUSS_SCRDIR=/home/scr/$JOB_ID
+mkdir /home/scr/$JOB_ID
+
+g16 < ${fileName}.inp > ${fileName}.log
+
+rm -rf /home/scr/$JOB_ID
+
+#sleep 5
+`
+    return exeLines
 }
 
 function R2Atom(r:number){
