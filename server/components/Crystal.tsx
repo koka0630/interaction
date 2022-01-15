@@ -39,7 +39,7 @@ const monomer: [x: number, y: number, z: number,r:number][] = [
   [0,-1.244162,4.598637,1.2]
 ]
 
-export interface MoluculeProps {
+export interface MoleculeProps {
   x: number;
   y: number;
   z: number;
@@ -56,7 +56,7 @@ export interface CrystalProps {
   A2: number;
 }
 
-const Molucule: React.FC<MoluculeProps> = (props) => {
+const Molecule: React.FC<MoleculeProps> = (props) => {
   const { x,y,z, angleX=0, angleY=0, angleZ } = props;
   return (
     <group position={[x,y,z]} rotation={[ angleX*(Math.PI/180), angleY*(Math.PI/180), angleZ*(Math.PI/180)]}>
@@ -76,15 +76,15 @@ export const Crystal: React.FC<CrystalProps> = (props) => {
   const { a, b, theta, A1=0, A2=0 } = props;
   return (
     <group>
-      <Molucule x={0} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
-      <Molucule x={a} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
-      <Molucule x={0} y={b} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
-      <Molucule x={a/2} y={b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
-      <Molucule x={a/2} y={-b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
-      <Molucule x={-a} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
-      <Molucule x={0} y={-b} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
-      <Molucule x={-a/2} y={-b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
-      <Molucule x={-a/2} y={b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
+      <Molecule x={0} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
+      <Molecule x={a} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
+      <Molecule x={-a} y={0} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
+      <Molecule x={0} y={b} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
+      <Molecule x={0} y={-b} z={0} angleX={A1} angleY={A2} angleZ={theta}/>
+      <Molecule x={a/2} y={b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
+      <Molecule x={a/2} y={-b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
+      <Molecule x={-a/2} y={-b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
+      <Molecule x={-a/2} y={b/2} z={0} angleX={A1} angleY={A2} angleZ={-theta}/>
     </group>
   )
 }

@@ -173,10 +173,59 @@ function getMonomer(monomerName: string, Ta: number, Tb: number, Tc: number, A1:
     return xyzrArray
 }
 
-
+export function makeGjf(monomerName: string, a: number, b: number, theta: number, A1: number, A2: number) {
+    const monomerI = getMonomer(monomerName,0.,0.,0.,A1,A2,theta)
+    const monomerT1=  getMonomer(monomerName,a/2,b/2,0.,-A1,A2,-theta)
+    const monomerP1= a>b 
+        ? getMonomer(monomerName,0.,b,0.,A1,A2,theta)
+        : getMonomer(monomerName,a,0.,0.,A1,A2,theta)
     
+    const jobDiscription = `a=${a} b=${b} theta=${theta} A1=${A1} A2=${A2}`
+    const gjfT = makeOneGjf(monomerI,monomerT1,`${jobDiscription}_t`)
+    const gjfP = makeOneGjf(monomerI,monomerP1,`${jobDiscription}_p`)
+    const gjfArray = [gjfT,gjfP]
+    const gjf = '$ RunGauss\n' + gjfArray.join('\n\n--Link1--\n')
+    return gjf
+}
+
+function makeOneGjf(monomer1: number[][], monomer2: number[][], jobDiscription: string){
+    const gjfLines=
+    `%mem=15GB
+%nproc=30
+#P TEST b3lyp/6-311G** EmpiricalDispersion=GD3 counterpoise=2
+
+${jobDiscription}
+
+0 1 0 1 0 1
+
+${monomer1.map((xyzr,index) => {
+    const atom = R2Atom(xyzr[3])
+    return `${atom}(Fragment=1) ${xyzr[0].toFixed(5)} ${xyzr[1].toFixed(5)} ${xyzr[2].toFixed(5)}`
+}).join('\n')}
+${monomer2.map((xyzr,index) => {
+    const atom = R2Atom(xyzr[3])
+    return `${atom}(Fragment=2) ${xyzr[0].toFixed(5)} ${xyzr[1].toFixed(5)} ${xyzr[2].toFixed(5)}`
+}).join('\n')}
 
 
+`
+    return gjfLines
+
+}
+
+function R2Atom(r:number){
+    switch (r) {
+        case 1.8:
+            return 'S'
+        case 1.7:
+            return 'C'
+        case 1.2:
+            return 'H'
+        default:
+            console.log('invalid atom radius')
+            return 'X'
+    }
+}
 function Rod(n: number[],thetaDeg:number) {
     const nx = n[0]
     const ny = n[1]
