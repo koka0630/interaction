@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Canvas } from "react-three-fiber";
 import Slider, { Mark } from '@material-ui/core/Slider';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+const fs = require("fs");
 
 import { CameraControls } from "./CameraControls";
 import Crystal, { CrystalProps } from './Crystal'
@@ -16,7 +17,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { getDimerVdwOrbit } from '../apollo/modules/vdw'
+import { getDimerVdwOrbit, makeGjf } from '../apollo/modules/vdw'
 import { Scatter } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -53,6 +54,8 @@ function HomePage() {
   const [theta,setTheta]=useState<number>(25)
   const [axisA,setAxisA]=useState<number>(8.0)
   const [axisB,setAxisB]=useState<number>(6.0)
+  const [A1,setA1]=useState<number>(0)
+  const [A2,setA2]=useState<number>(0)
   const onChangeAxisA = (event: object, value: number | number[]) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     setAxisA(normalizedValue)
@@ -198,6 +201,17 @@ function HomePage() {
       y: {min: 40, max: 60},
     }
   }
+  const makeGjfHanlder = () => {
+    const gjf = makeGjf(monomerName, axisA,axisB,theta,A1,A2)
+    const fileName = `${monomerName}_a=${axisA}_b=${axisB}_theta=${theta}_A1=${A1}_A2=${A2}.gjf`
+    const blob = new Blob([gjf], { type: 'text/plain' });
+    const aTag = document.createElement('a');
+    aTag.href = URL.createObjectURL(blob);
+    aTag.target = '_blank';
+    aTag.download = fileName;
+    aTag.click();
+    URL.revokeObjectURL(aTag.href);
+  }
 
   return (
     <div className="overflow-hidden h-full min-height:0">
@@ -210,6 +224,7 @@ function HomePage() {
             <directionalLight position={[0, 5, -4]} intensity={1} />
             <Crystal a={axisA} b={axisB} theta={theta} A1={0} A2={0}/>
           </Canvas>
+          <Button variant="contained" onClick={makeGjfHanlder}>make gaussian job file</Button>
         </div>
         <div className="relative flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
           <Scatter data={plot1} />
