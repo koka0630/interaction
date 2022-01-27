@@ -56,15 +56,29 @@ export interface CrystalProps {
   A2: number;
 }
 
+function r2Color(r: number){
+  switch (r) {
+    case 1.2:
+      return "rgb(212, 212, 212)" 
+    case 1.7:
+      return "rgb(128, 128, 128)" 
+    case 1.8:
+      return "rgb(255, 215, 0)" 
+    default:
+      return "rgb(0, 0, 0)" 
+  }
+}
+
 const Molecule: React.FC<MoleculeProps> = (props) => {
   const { x,y,z, angleX=0, angleY=0, angleZ } = props;
   return (
     <group position={[x,y,z]} rotation={[ angleX*(Math.PI/180), angleY*(Math.PI/180), angleZ*(Math.PI/180)]}>
       {monomer.map((xyzr)=>{
+        const color = r2Color(xyzr[3])
         return (
           <mesh position={[xyzr[0], xyzr[1], xyzr[2]]}>
             <sphereGeometry args={[xyzr[3], 32, 32]}/>
-            <meshStandardMaterial color={"rgb(0, 158, 255)"} roughness={0} metalness={0}/>
+            <meshStandardMaterial color={color} roughness={0} metalness={0}/>
           </mesh>
         )
       })}
