@@ -172,7 +172,7 @@ function HomePage() {
           label: "a - 面積",
           data: vdwAxisArray.map(([_a,_b]) => {return [_a, _a * _b]}),
           backgroundColor: "rgba(0, 0, 255, 0.5)",
-          pointRadius: 2,
+          pointRadius: 8,
         },
         {
           label: "現在の構造",
