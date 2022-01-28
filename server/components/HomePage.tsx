@@ -104,7 +104,9 @@ function HomePage() {
       b: number;
       Emin: number;
     } } = {}
+    const thetaFilterArray: number[] = [10.0, 15.0, 20.0, 22.5, 25.0, 27.5, 30.0, 35.0, 40.0, 45.0]
     for (const record of records){
+      if (!thetaFilterArray.includes(record.theta)) continue;
       if (record.theta in theta2Emin){
         if (record.E < theta2Emin[record.theta].Emin){
           theta2Emin[record.theta]={
