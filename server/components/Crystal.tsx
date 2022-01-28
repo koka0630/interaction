@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import React, { useEffect, useRef, useMemo,useState } from "react";
 // import { gql, useQuery } from '@apollo/client';
 // import { GetDimerVdwOrbitOutput } from '../generated/graphql-schema';
@@ -80,6 +81,7 @@ export interface MoleculeProps {
   angleY: number;
   angleZ: number;
   monomerName: string;
+  type: "box" | "VdW" | null
 }
 
 export interface CrystalProps {
@@ -90,6 +92,10 @@ export interface CrystalProps {
   R3p: number;
   A1: number;
   A2: number;
+  Ria: number;
+  Rib: number;
+  Ric: number;
+  interlayerType: "box" | "VdW" | null
 }
 
 function r2Color(r: number){
@@ -106,17 +112,21 @@ function r2Color(r: number){
 }
 
 const Molecule: React.FC<MoleculeProps> = (props) => {
-  const { x: _x, y: _y, z: _z, angleX: _angleX, angleY: _angleY, angleZ: _angleZ, monomerName } = props;
+  const { x: _x, y: _y, z: _z, angleX: _angleX, angleY: _angleY, angleZ: _angleZ, monomerName, type } = props;
   let monomer: [x: number, y: number, z: number, r: number][]
+  let monomerLength: number
   switch (monomerName){
     case "anthracene":
       monomer = anthraceneMonomer
+      monomerLength = 11
       break
     case "tetracene":
       monomer = tetraceneMonomer
+      monomerLength = 14
       break
     default:
       monomer = []
+      monomerLength = 0
       break
   }
   // カメラの制約から回転が不自由な方向を向いてしまうので、positionを決めるときはYとZを入れ替える
@@ -126,6 +136,17 @@ const Molecule: React.FC<MoleculeProps> = (props) => {
   const x = _x
   const y = _z
   const z = -_y
+
+  if ( type==="box" ){
+    return (
+      <group position={[x,y-3*monomerLength/8,z]} rotation={[ angleX*(Math.PI/180), angleY*(Math.PI/180), angleZ*(Math.PI/180)]}>
+        <mesh>
+          <boxBufferGeometry args={[0.5, monomerLength/4, 5]} />
+          <meshStandardMaterial color={"rgb(0,128,212)"} roughness={0} metalness={0}/>
+        </mesh>
+      </group>
+    )
+  }
   
   return (
     <group position={[x,y,z]} rotation={[ angleX*(Math.PI/180), angleY*(Math.PI/180), angleZ*(Math.PI/180)]}>
@@ -147,19 +168,21 @@ const Molecule: React.FC<MoleculeProps> = (props) => {
 };
 
 export const Crystal: React.FC<CrystalProps> = (props) => {
-  const { a, b, theta, A1=0, A2=0, R3t=0, R3p=0 } = props;
+  const { a, b, theta, A1=0, A2=0, R3t=0, R3p=0, Ria, Rib, Ric, interlayerType } = props;
   const monomerName="tetracene"
   return (
     <group>
-      <Molecule x={0} y={0} z={0} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName}/>
-      <Molecule x={a} y={0} z={2*R3t-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName}/>
-      <Molecule x={-a} y={0} z={-2*R3t+R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName}/>
-      <Molecule x={0} y={b} z={R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName}/>
-      <Molecule x={0} y={-b} z={-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName}/>
-      <Molecule x={a/2} y={b/2} z={R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName}/>
-      <Molecule x={a/2} y={-b/2} z={R3t-R3p} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName}/> 
-      <Molecule x={-a/2} y={-b/2} z={-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName}/>
-      <Molecule x={-a/2} y={b/2} z={R3p-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName}/>
+      <Molecule x={0} y={0} z={0} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={a} y={0} z={2*R3t-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={-a} y={0} z={-2*R3t+R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={0} y={b} z={R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={0} y={-b} z={-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={a/2} y={b/2} z={R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={a/2} y={-b/2} z={R3t-R3p} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/> 
+      <Molecule x={-a/2} y={-b/2} z={-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={-a/2} y={b/2} z={R3p-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={Ria} y={Rib} z={Ric} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={interlayerType}/>
+      <Molecule x={Ria+a/2} y={Rib+b/2} z={Ric + R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/>
     </group>
   )
 }

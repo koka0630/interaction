@@ -2,10 +2,14 @@ import React, { useState, useMemo, useRef } from 'react';
 import { Canvas } from "react-three-fiber";
 import { OrbitControls }  from "@react-three/drei";
 import Slider, { Mark } from '@material-ui/core/Slider';
+import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 const fs = require("fs");
 
-import { CameraControls } from "./CameraControls";
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
+
 import Crystal, { CrystalProps } from './Crystal'
 import CsvReader, { Record } from "./CsvReader";
 import {
@@ -77,6 +81,8 @@ function HomePage() {
   const [A2,setA2]=useState<number>(0)
   const [R3t,setR3t]=useState<number>(0)
   const [R3p,setR3p]=useState<number>(0)
+  const [interlayerIsBox, setInterlayerIsBox] = useState<boolean>(false)
+
   const onChangeAxisA = (event: object, value: number | number[]) => {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     setAxisA(normalizedValue)
@@ -116,6 +122,11 @@ function HomePage() {
     setA1(currentA1)
     setA2(currentA2)
   };
+
+  const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInterlayerIsBox(event.target.checked);
+  };
+
   
   const [records, setRecords] = useState<Record[]>([{a:8.0,b:6.0,theta:25,E:0.0,E_t:0.0,E_p:0.0}])
   
@@ -294,6 +305,7 @@ function HomePage() {
     URL.revokeObjectURL(aTag.href);
   }
 
+  const interlayerType = interlayerIsBox ? 'box' : 'VdW'
   return (
     <div className="overflow-hidden h-full min-height:0">
       <div className="flex flex-row justify-between h-full min-width:0">
@@ -304,7 +316,7 @@ function HomePage() {
             <ambientLight intensity={0.50} />
             <spotLight position={[30, 30, 30]} penumbra={1} angle={0.2} color="white" castShadow shadow-mapSize={[512, 512]} />
             <directionalLight position={[0, 5, -4]} intensity={1} />
-            <Crystal a={axisA} b={axisB} theta={theta} R3t={R3t} R3p={R3p} A1={0} A2={0}/>
+            <Crystal a={axisA} b={axisB} theta={theta} R3t={R3t} R3p={R3p} A1={0} A2={0} Ria={0} Rib={0} Ric={14} interlayerType={interlayerType}/>
           </Canvas>
           <Button variant="contained" onClick={makeGjfHanlder}>make gaussian job file</Button>
         </div>
@@ -317,7 +329,11 @@ function HomePage() {
           <Scatter data={step2Plot}/>
           <Slider value={R3t} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={-4} max={4} onChange={onChangeR3t}/>
           <Slider value={R3p} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={-4} max={4} onChange={onChangeR3p}/>
-          <div className="self-end">
+          <div className="self-end flex flex-row" >
+            <Switch
+              checked={interlayerIsBox}
+              onChange={handleSwitch}
+            />
             <CsvReader setRecords={setRecords}/>
           </div>
         </div>
