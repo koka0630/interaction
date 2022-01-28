@@ -1,9 +1,6 @@
-import React, { FC, Component } from 'react'
+import React, { VFC } from 'react'
 
 import { CSVReader } from 'react-papaparse'
-
-import * as fs from 'fs';
-import { parse } from 'csv-parse/sync';
 
 export type Record = {
   a: number
@@ -27,10 +24,9 @@ interface CsvReaderProps {
   setRecords: (Records: Record[]) => void;
 }
 
-const CsvReader: FC<CsvReaderProps> = ({setRecords}) => {
+const CsvReader: VFC<CsvReaderProps> = ({setRecords}) => {
   
   // https://www.webdevqa.jp.net/ja/javascript/papa-parse%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6csv%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8B%E3%82%89react%E7%8A%B6%E6%85%8B%E3%81%AB%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E6%8A%BD%E5%87%BA%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AF%EF%BC%9F/835619745/
-  const records: Record[] = []
   return (
     <>
       <CSVReader
