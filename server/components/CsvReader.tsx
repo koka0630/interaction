@@ -11,9 +11,13 @@ export type Record = {
   theta: number
   A1?: number
   A2?: number
+  R3t?: number
+  R3p?: number
   E: number
-  E_p: number
-  E_t: number
+  E_p?: number
+  E_t?: number
+  E_t1?: number
+  E_t2?: number
   machine_type?: 1 | 2
   status?: 'Done' | 'NotYet' | 'InProgress'
   file_name?: string
@@ -40,10 +44,10 @@ const CsvReader: FC<CsvReaderProps> = ({setRecords}) => {
                 b: Number(result.b),
                 theta: Number(result.theta),
                 A1: Number(result?.A1 ?? 0),
-                A2: Number(result.A2 ?? 0),
+                A2: Number(result?.A2 ?? 0),
+                R3t: Number(result?.R3t ?? 0),
+                R3p: Number(result?.R3p ?? 0),
                 E: Number(result.E),
-                E_t: Number(result.E_t),
-                E_p: Number(result.E_p),
                 machine_type: result.machine_type,
                 status: result.status,
                 file_name: result.file_name,
