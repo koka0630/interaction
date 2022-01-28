@@ -86,19 +86,6 @@ function HomePage() {
 
   // 探索するパラメータと軌跡の定義
   const [vdwAxisArray, theta2Emin, plot1, plot2] = useMemo(() => {
-    // setTheta(records[step].theta)
-    const parameters: CrystalProps[] = [] 
-    for (const record of records) {
-      const parameter = {
-        a: record.a,
-        b: record.b,
-        theta: record.theta,
-        A1: record?.A1 ?? 0,
-        A2: record?.A2 ?? 0,
-      }
-      parameters.push(parameter)
-    }
-    
     const theta2Emin: { [theta: number]: {
       a: number;
       b: number;
