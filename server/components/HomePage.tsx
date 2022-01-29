@@ -136,9 +136,7 @@ function HomePage() {
     const normalizedValue = Array.isArray(value) ? value[0] : value;
     setR3t(normalizedValue)
     setR3p(normalizedValue)
-    // setA2(normalizedValue)
     const {A1: currentA1, A2: currentA2} = getA1A2(R3t, R3p, axisA, axisB)
-    // const {R3t: currentR3t, R3p: currentR3p} = getR3(A1, A2, axisA, axisB)
     setA1(currentA1)
     setA2(currentA2)
   };
