@@ -1,4 +1,4 @@
-import { tetraceneMonomer, anthraceneMonomer, btbtMonomer } from '@components/Crystal'
+import { tetraceneMonomer, anthraceneMonomer, pentaceneMonomer, btbtMonomer } from '@components/Crystal'
 import * as THREE from 'three'
 type GetVdwMonomerConfig = {
     monomerName: string
@@ -183,9 +183,12 @@ function getMonomer(monomerName: string, Ta: number, Tb: number, Tc: number, A1:
         case "anthracene":
             monomer = anthraceneMonomer
             break;
+        case "pentacene":
+            monomer = pentaceneMonomer
+            break;
         case "BTBT":
             monomer = btbtMonomer
-            break
+            break;
     }
     monomer.forEach(
         ([x,y,z,r]) => {
