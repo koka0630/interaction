@@ -90,11 +90,19 @@ function HomePage() {
 
   const handleChangeStep = (event: SelectChangeEvent) => {
     setStep(Number(event.target.value));
-    if (Number(event.target.value) === 3) {
-      setInterlayerType('VdW')
-      setEnabled(false)
-    } else {
-      setInterlayerType(null)
+    switch (Number(event.target.value)){
+      case 1:
+        setInterlayerType(null)
+        setR3t(0)
+        setR3p(0)
+        break;
+      case 2:
+        setInterlayerType(null)
+        break;
+      case 3:
+        setInterlayerType('VdW')
+        setEnabled(false)
+        break;
     }
   };
 
@@ -291,7 +299,7 @@ function HomePage() {
     };
     
   return [ vdwAxisArray, theta2Emin, plot1, plot2, step2AllData]
-  }, [records, axisA, axisB, theta])
+  }, [monomerName, records, axisA, axisB, theta])
 
   const [ step2CurrentPointData ] = useMemo(() => {
     const A1Rad = Math.PI * (A1 ?? 0) / 180 
@@ -325,7 +333,6 @@ function HomePage() {
       }
       return [emptyData,[]]
     }
-    // getInterlayerVdwMap(a: number, b: number, theta: number, R3t: number, R3p: number, monomerName: string, isParallel: boolean, A1?: number, A2?: number)
     const vdwRArray = getInterlayerVdwMap(axisA, axisB, theta, R3t, R3p, monomerName, true)
     const plotData: {
       colors: string[],
@@ -348,7 +355,7 @@ function HomePage() {
           pointRadius: 8,
         }
     return [data, vdwRArray]
-  }, [ axisA, axisB, theta, R3t, R3p ])
+  }, [ monomerName, axisA, axisB, theta, R3t, R3p ])
 
   const step3CurrentPointData = {
       label: "現在の構造",
