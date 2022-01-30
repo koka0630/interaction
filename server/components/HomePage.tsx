@@ -86,7 +86,7 @@ function HomePage() {
   const [interlayerType, setInterlayerType] = useState<'box' | 'VdW' | null>(null)
   const [enabled, setEnabled] = useState<boolean>(false)
   const [step, setStep] = useState<number>(1)
-  const [monomerName, setMonomerName] = useState<MonomerName>('tetracene')
+  const [monomerName, setMonomerName] = useState<MonomerName>('pentacene')
 
   const handleChangeStep = (event: SelectChangeEvent) => {
     setStep(Number(event.target.value));
