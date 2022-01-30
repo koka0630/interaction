@@ -69,7 +69,7 @@ function getA1A2(R3t: number, R3p: number, a_step1: number, b_step1: number){
   return { A1: A1rad * 180 / Math.PI, A2: A2rad * 180 / Math.PI }
 }
 
-export type MonomerName = 'anthracene' | 'tetracene' | 'pentacene' | 'BTBT'
+export type MonomerName = 'naphthalene' | 'anthracene' | 'tetracene' | 'pentacene' | 'BTBT'
 
 function HomePage() {
   // TODO こちらもフロント定義ではなく、バックエンドで出力されるようにする
@@ -271,11 +271,15 @@ function HomePage() {
       }
       const Emin = Math.min(...records.map((record) => record.E))
       const Emax = Math.max(...records.map((record) => record.E))
+      console.log('Emin')
+      console.log(Emin)
+      console.log('Emax')
+      console.log(Emax)  
       for (const record of records){
         const A1Rad = Math.PI * (record?.A1 ?? 0) / 180 
         const A2Rad = Math.PI * (record?.A2 ?? 0) / 180 
         const normalizedE = (record.E - Emin) / (Emax - Emin)
-        plotData.colors.push(`rgba(${ 255 * normalizedE }, 0, ${ 255 * ( 1 - normalizedE ) }, 1.0)`)
+        plotData.colors.push(`rgba(${ 255 * normalizedE }, ${ 255 * normalizedE }, 255, 1.0)`)
         // x = sin theta * cos phi = sin A1
         // y = sin theta * sin phi = cos A1 * sin A2
         // z = cos theta           = cos A1 * cos A2
@@ -341,10 +345,14 @@ function HomePage() {
     }
     const Vmin = Math.min(...vdwRArray.map((vdwR)=>vdwR.V))
     const Vmax = Math.max(...vdwRArray.map((vdwR)=>vdwR.V))
+    console.log('Vmin')
+    console.log(Vmin)
+    console.log('Vmax')
+    console.log(Vmax)
     for (const vdwR of vdwRArray){
       const normalizedV = (vdwR.V - Vmin) / (Vmax - Vmin)
       plotData.data.push([vdwR.Ria, vdwR.Rib])
-      plotData.colors.push(`rgba(${ 255 * normalizedV }, 0, ${ 255 * ( 1 - normalizedV ) }, 1.0)`)
+      plotData.colors.push(`rgba(${ 255 * normalizedV }, ${ 255 * normalizedV }, 255, 1.0)`)
     }
     const data = {
           label: "VdW体積",
@@ -415,6 +423,7 @@ function HomePage() {
               value={monomerName}
               onChange={handleChangeMonomerName}
             >
+              <MenuItem value={'naphthalene'}>naphthalene</MenuItem>
               <MenuItem value={'anthracene'}>anthracene</MenuItem>
               <MenuItem value={'tetracene'}>tetracene</MenuItem>
               <MenuItem value={'pentacene'}>pentacene</MenuItem>

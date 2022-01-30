@@ -1,6 +1,27 @@
 import React, { useEffect, useRef, useMemo,useState } from "react";
 import {MonomerName} from './HomePage'
+import {RitIntoCell} from '../apollo/modules/vdw'
 
+export const naphthaleneMonomer: [x: number, y: number, z: number,r:number][] = [
+  [0,0.715727,0.000000,1.7],
+  [0,1.400521,1.243211,1.7],
+  [0,0.707534,2.429183,1.7],
+  [0,-0.715727,0.000000,1.7],
+  [0,-1.400521,1.243211,1.7],
+  [0,-0.707534,2.429183,1.7],
+  [0,1.400521,-1.243211,1.7],
+  [0,0.707534,-2.429183,1.7],
+  [0,-1.400521,-1.243211,1.7],
+  [0,-0.707534,-2.429183,1.7],
+  [0,2.485685,1.241434,1.2],
+  [0,1.242785,3.372058,1.2],
+  [0,-2.485685,1.241434,1.2],
+  [0,-1.242785,3.372058,1.2],
+  [0,2.485685,-1.241434,1.2],
+  [0,1.242785,-3.372058,1.2],
+  [0,-2.485685,-1.241434,1.2],
+  [0,-1.242785,-3.372058,1.2],
+]
 export const anthraceneMonomer: [x: number, y: number, z: number,r:number][] = [
   [0,1.401938,0,1.7],
   [0,0.721584,-1.221313,1.7],
@@ -170,29 +191,28 @@ function r2Color(r: number){
 const Molecule: React.FC<MoleculeProps> = (props) => {
   const { x: _x, y: _y, z: _z, angleX: _angleX, angleY: _angleY, angleZ: _angleZ, monomerName, type } = props;
   let monomer: [x: number, y: number, z: number, r: number][]
-  let monomerLength: number
   switch (monomerName){
+    case "naphthalene":
+      monomer = naphthaleneMonomer
+      break;
     case "anthracene":
       monomer = anthraceneMonomer
-      monomerLength = 12 // TODO fix
       break
     case "tetracene":
       monomer = tetraceneMonomer
-      monomerLength = 14 // TODO fix
       break
     case "pentacene":
       monomer = pentaceneMonomer
-      monomerLength = 16 // TODO fix
       break
     case "BTBT":
       monomer = btbtMonomer
-      monomerLength = 13 // TODO fix
       break
     default:
       monomer = []
-      monomerLength = 0
       break
-  }
+    }
+  const radH = 1.2
+  const monomerLength = Math.max(...monomer.map(([x,y,z,r]) => z)) - Math.min(...monomer.map(([x,y,z,r]) => z)) + radH * 2
   // カメラの制約から回転が不自由な方向を向いてしまうので、positionを決めるときはYとZを入れ替える
   const angleX = _angleX
   const angleY = _angleZ
@@ -233,11 +253,12 @@ const Molecule: React.FC<MoleculeProps> = (props) => {
 
 export const Crystal: React.FC<CrystalProps> = (props) => {
   const { monomerName, a, b, theta, A1=0, A2=0, R3t=0, R3p=0, Ria, Rib, Ric, interlayerType } = props;
+  const [Rita,Ritb,Ritc] = RitIntoCell(a, b, Ria, Rib, R3t, R3p )
   return (
     <group>
       <Molecule x={0} y={0} z={0} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
-      <Molecule x={a} y={0} z={2*R3t-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
-      <Molecule x={-a} y={0} z={-2*R3t+R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      {/* <Molecule x={a} y={0} z={2*R3t-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
+      <Molecule x={-a} y={0} z={-2*R3t+R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/> */}
       <Molecule x={0} y={b} z={R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
       <Molecule x={0} y={-b} z={-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
       <Molecule x={a/2} y={b/2} z={R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
@@ -250,7 +271,7 @@ export const Crystal: React.FC<CrystalProps> = (props) => {
       {/* <Molecule x={Ria+a/2} y={Rib+b/2} z={Ric + R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
       {/* <Molecule x={Ria+a/2} y={Rib-b/2} z={Ric + R3t - R3p} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
       {/* <Molecule x={Ria-a/2} y={Rib+b/2} z={Ric + R3p - R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
-      {interlayerType && <Molecule x={Ria-a/2} y={Rib-b/2} z={Ric - R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/>}
+      {interlayerType && <Molecule x={Rita} y={Ritb} z={Ric+Ritc} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/>}
     </group>
   )
 }

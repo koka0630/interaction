@@ -1,4 +1,4 @@
-import { tetraceneMonomer, anthraceneMonomer, pentaceneMonomer, btbtMonomer } from '@components/Crystal'
+import { tetraceneMonomer, anthraceneMonomer, pentaceneMonomer, btbtMonomer, naphthaleneMonomer } from '@components/Crystal'
 import * as THREE from 'three'
 type GetVdwMonomerConfig = {
     monomerName: string
@@ -75,7 +75,7 @@ export function getInterlayerVdwMap(a: number, b: number, theta: number, R3t: nu
     return vdwArray
 }
 
-function RitIntoCell(a: number, b: number, Ria: number, Rib: number, R3t: number, R3p: number ){
+export function RitIntoCell(a: number, b: number, Ria: number, Rib: number, R3t: number, R3p: number ){
     if (Ria >= 0 && Rib >= 0){
         return [Ria-a/2,Rib-b/2,-R3t]
     } else if (Ria >= 0 && Rib < 0) {
@@ -177,6 +177,9 @@ function getMonomer(monomerName: string, Ta: number, Tb: number, Tc: number, A1:
 
     let monomer: [x: number, y: number, z: number,r:number][] = []
     switch (monomerName){
+        case "naphthalene":
+            monomer = naphthaleneMonomer
+            break;
         case "tetracene":
             monomer = tetraceneMonomer
             break;
