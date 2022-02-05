@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo,useState } from "react";
 import {MonomerName} from './HomePage'
-import {RitIntoCell} from '../apollo/modules/vdw'
+import {RitIntoCell} from '../apollo/utils/vdw'
 
 export const naphthaleneMonomer: [x: number, y: number, z: number,r:number][] = [
   [0,0.715727,0.000000,1.7],

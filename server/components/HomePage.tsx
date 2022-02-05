@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
+import { useQuery, gql } from '@apollo/client';
 import { Canvas } from "react-three-fiber";
 import { OrbitControls }  from "@react-three/drei";
 import Slider, { Mark } from '@material-ui/core/Slider';
@@ -7,8 +8,8 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import Crystal, { CrystalProps } from './Crystal'
-import CsvReader, { Record } from "./CsvReader";
+import Crystal from './Crystal'
+import { Record } from '../generated/graphql-schema';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,8 +20,27 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { getInterlayerVdwMap, getDimerVdwOrbit, makeGjf } from '../apollo/modules/vdw'
+import { getInterlayerVdwMap, getDimerVdwOrbit, makeGjf } from '../apollo/utils/vdw'
 import { Scatter } from 'react-chartjs-2';
+
+const QUERY = gql`
+  query getNthStepCsvByMonomerName($monomerName: MonomerName, $step: Int) {
+    getNthStepCsvByMonomerName(monomerName: $monomerName, step: $step) {
+      a
+      b
+      theta
+      A1
+      A2
+      R3t
+      R3p
+      E
+      E_p
+      E_t
+      E_t1
+      E_t2
+    }
+  }
+`;
 
 ChartJS.register(
   CategoryScale,
@@ -175,9 +195,29 @@ function HomePage() {
       );
   };
 
+
+  const [records, setRecords] = useState<Record[]>([])
+
+  const { data, refetch } = useQuery(QUERY, {
+    // fetchPolicy: 'cache-and-network',
+    variables: {
+      monomerName: monomerName,
+      step: step,
+    },
+  });
   
-  const [records, setRecords] = useState<Record[]>([{a:8.0,b:6.0,theta:25,E:0.0,E_t:0.0,E_p:0.0}])
-  
+  useMemo(()=>{
+    console.log('refetch')
+    refetch()
+    if (!data) {
+      console.log('empty data')
+      setRecords([])
+      return;
+    };
+    console.log('setRecords(data.getNthStepCsvByMonomerName)')
+    console.log(data.getNthStepCsvByMonomerName)
+    setRecords(data.getNthStepCsvByMonomerName)
+  },[monomerName, step])
 
   // 探索するパラメータと軌跡の定義
   const [vdwAxisArray, theta2Emin, plot1, plot2, step2AllData] = useMemo(() => {
@@ -439,12 +479,11 @@ function HomePage() {
               <MenuItem value={2}>step2</MenuItem>
               <MenuItem value={3}>step3</MenuItem>
             </Select>
-            <CsvReader setRecords={setRecords}/>
             <Button variant="contained" onClick={makeGjfHanlder}>make gaussian job file</Button>
           </div>
         </div>
         <div className="relative justify-center flex flex-col overflow-hidden w-full max-w-6xl h-full min-height:0 mr-5 lg:mr-10">
-          { step === 1 && 
+          { step === 1 && records.length !== 0 &&
             <div>
               <Scatter data={plot1} /> 
               <Slider value={theta} aria-label="Default" valueLabelDisplay="auto" marks={marks} step={null} onChange={onChangeTheta}/>
@@ -453,14 +492,14 @@ function HomePage() {
               <Slider value={axisB} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={3} max={15} onChange={onChangeAxisB}/>
             </div>
           }
-          { step === 3 && 
+          { step === 3 && records.length !== 0 &&
             <div>
               <Scatter data={step3Plot} /> 
               <Slider value={Ria} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={-Number((axisA/2).toFixed(1))} max={Number((axisA/2).toFixed(1))} onChange={onChangeRia}/>
               <Slider value={Rib} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={-Number((axisB/2).toFixed(1))} max={Number((axisB/2).toFixed(1))} onChange={onChangeRib}/>
             </div>
           }
-          { (step === 2 || step === 3) && 
+          { (step === 2 || step === 3) && records.length !== 0 &&
           <div>
             <Scatter data={step2Plot} /> 
             <Slider value={R3t} aria-label="Default" valueLabelDisplay="auto" step={0.1} min={-4} max={4} onChange={onChangeR3t}/>

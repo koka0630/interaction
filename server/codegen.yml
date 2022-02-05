@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - './apollo/**/*.tsx'
+  - './apollo/modules/*.tsx'
 generates:
   generated/graphql-resolvers.d.ts:
     preset: import-types

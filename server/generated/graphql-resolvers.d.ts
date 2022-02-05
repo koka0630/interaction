@@ -73,12 +73,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Types.Scalars['Boolean']>;
-  DimerTypeEnum: Types.DimerTypeEnum;
   Float: ResolverTypeWrapper<Types.Scalars['Float']>;
   Int: ResolverTypeWrapper<Types.Scalars['Int']>;
+  MonomerName: Types.MonomerName;
   Query: ResolverTypeWrapper<{}>;
+  Record: ResolverTypeWrapper<Types.Record>;
+  Status: Types.Status;
   String: ResolverTypeWrapper<Types.Scalars['String']>;
-  getDimerVdwOrbitOutput: ResolverTypeWrapper<Types.GetDimerVdwOrbitOutput>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -87,22 +88,35 @@ export type ResolversParentTypes = ResolversObject<{
   Float: Types.Scalars['Float'];
   Int: Types.Scalars['Int'];
   Query: {};
+  Record: Types.Record;
   String: Types.Scalars['String'];
-  getDimerVdwOrbitOutput: Types.GetDimerVdwOrbitOutput;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getDimerVdwOrbit?: Resolver<Types.Maybe<ResolversTypes['getDimerVdwOrbitOutput']>, ParentType, ContextType, RequireFields<Types.QueryGetDimerVdwOrbitArgs, never>>;
+  getNthStepCsvByMonomerName?: Resolver<Array<Types.Maybe<ResolversTypes['Record']>>, ParentType, ContextType, RequireFields<Types.QueryGetNthStepCsvByMonomerNameArgs, never>>;
 }>;
 
-export type GetDimerVdwOrbitOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['getDimerVdwOrbitOutput'] = ResolversParentTypes['getDimerVdwOrbitOutput']> = ResolversObject<{
-  distanceCollisionArray?: Resolver<Types.Maybe<Array<ResolversTypes['Float']>>, ParentType, ContextType>;
-  phiArray?: Resolver<Types.Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>;
+export type RecordResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Record'] = ResolversParentTypes['Record']> = ResolversObject<{
+  A1?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  A2?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  E?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  E_p?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  E_t?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  E_t1?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  E_t2?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  R3p?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  R3t?: Resolver<Types.Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  a?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  b?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  file_name?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machine_type?: Resolver<Types.Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<Types.Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
+  theta?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
-  getDimerVdwOrbitOutput?: GetDimerVdwOrbitOutputResolvers<ContextType>;
+  Record?: RecordResolvers<ContextType>;
 }>;
 

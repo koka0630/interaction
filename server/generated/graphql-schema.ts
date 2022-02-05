@@ -11,26 +11,46 @@ export type Scalars = {
   Float: number;
 };
 
-export enum DimerTypeEnum {
-  P = 'p',
-  T = 't'
+export enum MonomerName {
+  Btbt = 'BTBT',
+  Anthracene = 'anthracene',
+  Naphthalene = 'naphthalene',
+  Pentacene = 'pentacene',
+  Tetracene = 'tetracene'
 }
 
 export type Query = {
   __typename?: 'Query';
-  getDimerVdwOrbit?: Maybe<GetDimerVdwOrbitOutput>;
+  getNthStepCsvByMonomerName: Array<Maybe<Record>>;
 };
 
 
-export type QueryGetDimerVdwOrbitArgs = {
-  A1?: Maybe<Scalars['Int']>;
-  A2?: Maybe<Scalars['Int']>;
-  monomerName?: Maybe<Scalars['String']>;
-  theta?: Maybe<Scalars['Int']>;
+export type QueryGetNthStepCsvByMonomerNameArgs = {
+  monomerName?: Maybe<MonomerName>;
+  step?: Maybe<Scalars['Int']>;
 };
 
-export type GetDimerVdwOrbitOutput = {
-  __typename?: 'getDimerVdwOrbitOutput';
-  distanceCollisionArray?: Maybe<Array<Scalars['Float']>>;
-  phiArray?: Maybe<Array<Scalars['Int']>>;
+export type Record = {
+  __typename?: 'Record';
+  A1?: Maybe<Scalars['Float']>;
+  A2?: Maybe<Scalars['Float']>;
+  E: Scalars['Float'];
+  E_p?: Maybe<Scalars['Float']>;
+  E_t?: Maybe<Scalars['Float']>;
+  E_t1?: Maybe<Scalars['Float']>;
+  E_t2?: Maybe<Scalars['Float']>;
+  R3p?: Maybe<Scalars['Float']>;
+  R3t?: Maybe<Scalars['Float']>;
+  a: Scalars['Float'];
+  b: Scalars['Float'];
+  file_name?: Maybe<Scalars['String']>;
+  machine_type?: Maybe<Scalars['Int']>;
+  status?: Maybe<Status>;
+  theta: Scalars['Float'];
 };
+
+export enum Status {
+  Done = 'Done',
+  InProgress = 'InProgress',
+  NotYet = 'NotYet'
+}
