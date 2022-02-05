@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import Crystal from './Crystal'
-import { Record } from '../generated/graphql-schema';
+import { Record, MonomerName } from '../generated/graphql-schema';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -89,8 +89,6 @@ function getA1A2(R3t: number, R3p: number, a_step1: number, b_step1: number){
   return { A1: A1rad * 180 / Math.PI, A2: A2rad * 180 / Math.PI }
 }
 
-export type MonomerName = 'naphthalene' | 'anthracene' | 'tetracene' | 'pentacene' | 'BTBT'
-
 function HomePage() {
   // TODO こちらもフロント定義ではなく、バックエンドで出力されるようにする
   const [theta,setTheta]=useState<number>(25.5)
@@ -106,7 +104,7 @@ function HomePage() {
   const [interlayerType, setInterlayerType] = useState<'box' | 'VdW' | null>(null)
   const [enabled, setEnabled] = useState<boolean>(false)
   const [step, setStep] = useState<number>(1)
-  const [monomerName, setMonomerName] = useState<MonomerName>('pentacene')
+  const [monomerName, setMonomerName] = useState<MonomerName>(MonomerName.Pentacene)
 
   const handleChangeStep = (event: SelectChangeEvent) => {
     setStep(Number(event.target.value));
@@ -463,11 +461,11 @@ function HomePage() {
               value={monomerName}
               onChange={handleChangeMonomerName}
             >
-              <MenuItem value={'naphthalene'}>naphthalene</MenuItem>
-              <MenuItem value={'anthracene'}>anthracene</MenuItem>
-              <MenuItem value={'tetracene'}>tetracene</MenuItem>
-              <MenuItem value={'pentacene'}>pentacene</MenuItem>
-              <MenuItem value={'BTBT'}>BTBT</MenuItem>
+              <MenuItem value={MonomerName.Naphthalene}>naphthalene</MenuItem>
+              <MenuItem value={MonomerName.Anthracene}>anthracene</MenuItem>
+              <MenuItem value={MonomerName.Tetracene}>tetracene</MenuItem>
+              <MenuItem value={MonomerName.Pentacene}>pentacene</MenuItem>
+              <MenuItem value={MonomerName.Btbt}>BTBT</MenuItem>
             </Select>
             <Select
               labelId="demo-simple-select-label"

@@ -1,13 +1,8 @@
 import { gql } from '@apollo/client';
-// import csv from 'csv';
-// import fs from 'fs';
 import * as fs from 'fs';
 import { parse } from 'csv-parse/sync';
 import { Record } from '../../generated/graphql-schema';
 import { Resolvers } from '../../generated/graphql-resolvers';
-// const csv = require('csv');
-// const fs = require('fs');
-// const path = require('path');
 
 export const typeDefs = gql`
   type Query {
