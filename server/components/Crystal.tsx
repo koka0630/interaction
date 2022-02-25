@@ -257,8 +257,6 @@ export const Crystal: React.FC<CrystalProps> = (props) => {
   return (
     <group>
       <Molecule x={0} y={0} z={0} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
-      {/* <Molecule x={a} y={0} z={2*R3t-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
-      <Molecule x={-a} y={0} z={-2*R3t+R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/> */}
       <Molecule x={0} y={b} z={R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
       <Molecule x={0} y={-b} z={-R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={"VdW"}/>
       <Molecule x={a/2} y={b/2} z={R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
@@ -266,11 +264,6 @@ export const Crystal: React.FC<CrystalProps> = (props) => {
       <Molecule x={-a/2} y={-b/2} z={-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
       <Molecule x={-a/2} y={b/2} z={R3p-R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={"VdW"}/>
       {interlayerType && <Molecule x={Ria} y={Rib} z={Ric} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={interlayerType}/>}
-      {/* <Molecule x={Ria} y={Rib+b} z={Ric + R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={interlayerType}/>
-      <Molecule x={Ria} y={Rib-b} z={Ric - R3p} angleX={-A2} angleY={A1} angleZ={theta} monomerName={monomerName} type={interlayerType}/> */}
-      {/* <Molecule x={Ria+a/2} y={Rib+b/2} z={Ric + R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
-      {/* <Molecule x={Ria+a/2} y={Rib-b/2} z={Ric + R3t - R3p} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
-      {/* <Molecule x={Ria-a/2} y={Rib+b/2} z={Ric + R3p - R3t} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/> */}
       {interlayerType && <Molecule x={Rita} y={Ritb} z={Ric+Ritc} angleX={-A2} angleY={A1} angleZ={-theta} monomerName={monomerName} type={interlayerType}/>}
     </group>
   )
