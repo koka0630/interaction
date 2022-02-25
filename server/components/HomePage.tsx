@@ -24,7 +24,7 @@ import { getInterlayerVdwMap, getDimerVdwOrbit, makeGjf } from '../apollo/utils/
 import { Scatter } from 'react-chartjs-2';
 
 const QUERY = gql`
-  query getNthStepCsvByMonomerName($monomerName: MonomerName, $step: Int) {
+  query getNthStepCsvByMonomerName($monomerName: MonomerName!, $step: Int!) {
     getNthStepCsvByMonomerName(monomerName: $monomerName, step: $step) {
       a
       b

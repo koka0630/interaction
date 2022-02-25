@@ -14,6 +14,7 @@ export type Scalars = {
 export enum MonomerName {
   Btbt = 'BTBT',
   Anthracene = 'anthracene',
+  Dyamond = 'dyamond',
   Naphthalene = 'naphthalene',
   Pentacene = 'pentacene',
   Tetracene = 'tetracene'
@@ -26,8 +27,8 @@ export type Query = {
 
 
 export type QueryGetNthStepCsvByMonomerNameArgs = {
-  monomerName?: Maybe<MonomerName>;
-  step?: Maybe<Scalars['Int']>;
+  monomerName: MonomerName;
+  step: Scalars['Int'];
 };
 
 export type Record = {

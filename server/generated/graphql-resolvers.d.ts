@@ -93,7 +93,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getNthStepCsvByMonomerName?: Resolver<Array<Types.Maybe<ResolversTypes['Record']>>, ParentType, ContextType, RequireFields<Types.QueryGetNthStepCsvByMonomerNameArgs, never>>;
+  getNthStepCsvByMonomerName?: Resolver<Array<Types.Maybe<ResolversTypes['Record']>>, ParentType, ContextType, RequireFields<Types.QueryGetNthStepCsvByMonomerNameArgs, 'monomerName' | 'step'>>;
 }>;
 
 export type RecordResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Record'] = ResolversParentTypes['Record']> = ResolversObject<{

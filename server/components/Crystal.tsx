@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useMemo,useState } from "react";
-import {MonomerName} from './HomePage'
+import {MonomerName} from '../generated/graphql-schema'
 import {RitIntoCell} from '../apollo/utils/vdw'
 
 export const naphthaleneMonomer: [x: number, y: number, z: number,r:number][] = [

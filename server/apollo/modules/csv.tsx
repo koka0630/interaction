@@ -6,7 +6,7 @@ import { Resolvers } from '../../generated/graphql-resolvers';
 
 export const typeDefs = gql`
   type Query {
-    getNthStepCsvByMonomerName(monomerName: MonomerName, step: Int): [Record]!
+    getNthStepCsvByMonomerName(monomerName: MonomerName!, step: Int!): [Record]!
   }
   enum MonomerName {
     naphthalene
@@ -14,6 +14,7 @@ export const typeDefs = gql`
     tetracene
     pentacene
     BTBT
+    dyamond
   }
   type Record {
     a: Float!
@@ -42,7 +43,7 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
     Query: {
         getNthStepCsvByMonomerName: async (_, { monomerName, step}) => {
-            if (!monomerName || !step) return [];
+            console.log(monomerName,step)
             const csvName = step2csvName(step)
             
             const data = fs.readFileSync(`data/${monomerName}/${csvName}.csv`);
